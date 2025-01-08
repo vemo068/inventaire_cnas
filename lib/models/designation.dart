@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class Designation {
   int? id;
   String name;
@@ -19,3 +21,5 @@ class Designation {
         name: json['name'],
       );
 }
+
+

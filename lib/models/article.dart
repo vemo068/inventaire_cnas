@@ -43,3 +43,9 @@ class Article {
         montantTTC: json['montantTTC'],
       );
 }
+
+
+// create add article page designed for pc
+
+
+

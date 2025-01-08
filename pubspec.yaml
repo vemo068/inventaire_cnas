@@ -38,6 +38,7 @@ dependencies:
   sqflite_common_ffi: 
   path_provider: 
   get:
+  data_table_2:
 
 dev_dependencies:
   flutter_test:

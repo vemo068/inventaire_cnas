@@ -1,111 +1,84 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:inventaire_cnas/components/textfield_pc.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
-import 'package:inventaire_cnas/models/article.dart';
 
-class AddArticlePage extends StatelessWidget {
-  final DatabaseController controller = Get.find<DatabaseController>();
-  final _formKey = GlobalKey<FormState>();
+class AddArticlePage extends StatefulWidget {
+  @override
+  State<AddArticlePage> createState() => _AddArticlePageState();
+}
 
-  String? selectedDesignation;
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController quantityController = TextEditingController();
-  final TextEditingController priceHTController = TextEditingController();
-  final TextEditingController tvaController = TextEditingController();
-
-  AddArticlePage({super.key});
+class _AddArticlePageState extends State<AddArticlePage> {
+  final DatabaseController databaseController = Get.find<DatabaseController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Article"),
+        title: Text('Add Article'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
           child: Column(
-            children: [
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
               Obx(() {
-                if (controller.designations.isEmpty) {
-                  return const Text("No designations available.");
+                if (databaseController.designations.isEmpty) {
+                  return Text('No designations available');
+                } else {
+                  return DropdownButton<String>(
+                    value: databaseController.selectedDesignation?.name,
+                    hint: Text('Select Designation'),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        databaseController.selectedDesignation!.name =
+                            newValue!;
+                      });
+                    },
+                    items: databaseController.designations.map((designation) {
+                      return DropdownMenuItem<String>(
+                        value: databaseController.selectedDesignation!.name,
+                        child:
+                            Text(databaseController.selectedDesignation!.name),
+                      );
+                    }).toList(),
+                  );
                 }
-                return DropdownButtonFormField<String>(
-                  value: selectedDesignation,
-                  items: controller.designations
-                      .map((designation) => DropdownMenuItem<String>(
-                            value: designation.name,
-                            child: Text(designation.name),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    selectedDesignation = value;
-                  },
-                  decoration: const InputDecoration(
-                    labelText: "Select Designation",
-                  ),
-                  validator: (value) =>
-                      value == null ? "Please select a designation" : null,
+              }),
+              SizedBox(height: 16.0),
+              Obx(() {
+                return ElevatedButton(
+                  onPressed: databaseController.designations.isEmpty
+                      ? null
+                      : () async {
+                          await databaseController.addDesignation();
+                          Get.back();
+                        },
+                  child: Text('Add Designation'),
                 );
               }),
-              TextFormField(
-                controller: descriptionController,
-                decoration: const InputDecoration(labelText: "Description"),
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter a description" : null,
+              TxtFldPC(
+                hint: "fff",
+                controller: TextEditingController(),
               ),
-              TextFormField(
-                controller: quantityController,
-                decoration: const InputDecoration(labelText: "Quantity"),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter a quantity" : null,
-              ),
-              TextFormField(
-                controller: priceHTController,
-                decoration: const InputDecoration(labelText: "Price HT"),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter a price" : null,
-              ),
-              TextFormField(
-                controller: tvaController,
-                decoration: const InputDecoration(labelText: "TVA (%)"),
-                keyboardType: TextInputType.number,
-                validator: (value) =>
-                    value!.isEmpty ? "Please enter the TVA" : null,
-              ),
-              const SizedBox(height: 20),
+              SizedBox(height: 16.0),
+              TxtFldPC(hint: "hint", controller: TextEditingController()),
+              SizedBox(height: 16.0),
+              TxtFldPC(hint: "hint", controller: TextEditingController()),
+              SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _addArticle,
-                child: const Text("Add Article"),
+                onPressed: () {
+                  // Add article logic
+                },
+                child: Text('Add Article'),
               ),
             ],
           ),
         ),
       ),
     );
-  }
-
-  void _addArticle() {
-    if (_formKey.currentState!.validate()) {
-      final article = Article(
-        id: 0, // Auto-incremented
-        designationName: selectedDesignation!,
-        description: descriptionController.text,
-        quantity: int.parse(quantityController.text),
-        priceHT: double.parse(priceHTController.text),
-        montantHT: double.parse(priceHTController.text) *
-            int.parse(quantityController.text),
-        tva: double.parse(tvaController.text),
-        montantTTC: double.parse(priceHTController.text) *
-            int.parse(quantityController.text) *
-            (1 + double.parse(tvaController.text) / 100),
-      );
-
-      controller.addArticle(article);
-      Get.back(); // Return to the previous page
-    }
   }
 }

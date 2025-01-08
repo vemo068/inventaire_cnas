@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/article.dart';
@@ -9,6 +10,8 @@ class DatabaseController extends GetxController {
   // Observables for the data
   var designations = <Designation>[].obs;
   var articles = <Article>[].obs;
+  Designation? selectedDesignation;
+  TextEditingController designationNameController = TextEditingController();
 
   @override
   void onInit() {
@@ -30,7 +33,8 @@ class DatabaseController extends GetxController {
   }
 
   // Add a new designation
-  Future<void> addDesignation(Designation designation) async {
+  Future<void> addDesignation() async {
+    Designation designation = Designation(name: designationNameController.text);
     await _dbHelper.insertDesignation(designation);
     fetchDesignations();
   }
