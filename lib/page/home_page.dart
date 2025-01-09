@@ -7,8 +7,6 @@ import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 
 class HomePage extends StatelessWidget {
-  final DatabaseController controller = Get.find<DatabaseController>();
-
   HomePage({super.key});
 
   @override
@@ -16,16 +14,14 @@ class HomePage extends StatelessWidget {
     return Scaffold(
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            Get.to(AddArticlePage());
+            Get.to(() => AddArticlePage());
           },
           child: Icon(Icons.add),
         ),
         appBar: AppBar(
           title: const Text("Designations and Articles"),
         ),
-        body: Column(children: [
-          Expanded(child: ArticlesTable(onDelete: (Article) {}))
-        ]));
+        body: Column(children: [Expanded(child: ArticlesTable())]));
   }
 
   // Navigate to Add Article Page

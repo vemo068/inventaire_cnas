@@ -68,10 +68,16 @@ class _AddDesignationPageState extends State<AddDesignationPage> {
               TxtFldPC(
                 autofocus: true,
                 hint: "Designation Name",
-                controller: TextEditingController(),
+                controller: databaseController.designationNameController,
               ),
               SizedBox(height: 16.0),
-              
+              ElevatedButton(
+                onPressed: () async {
+                  await databaseController.addDesignation();
+                  Get.back();
+                },
+                child: Text('Add Designation'),
+              )
             ],
           ),
         ),

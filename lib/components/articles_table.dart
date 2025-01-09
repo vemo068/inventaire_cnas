@@ -5,15 +5,14 @@ import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/article.dart';
 
 class ArticlesTable extends StatelessWidget {
- final DatabaseController databaseController=Get.find<DatabaseController>();
-  final Function(Article) onDelete;
+  final DatabaseController databaseController = Get.find<DatabaseController>();
 
-  ArticlesTable({ required this.onDelete});
+  ArticlesTable({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-       () {
+    return GetBuilder<DatabaseController>(
+      builder: (controller) {
         return DataTable(
           columns: [
             DataColumn(label: Text('Designation')),
@@ -25,7 +24,7 @@ class ArticlesTable extends StatelessWidget {
             DataColumn(label: Text('Montant TTC')),
             DataColumn(label: Text('Actions')),
           ],
-          rows: databaseController.articles
+          rows: controller.articles
               .map((article) => DataRow(cells: [
                     DataCell(Text(article.designationName)),
                     DataCell(Text(article.description)),
@@ -36,12 +35,12 @@ class ArticlesTable extends StatelessWidget {
                     DataCell(Text(article.montantTTC.toString())),
                     DataCell(IconButton(
                       icon: Icon(Icons.delete),
-                      onPressed: () => onDelete(article),
+                      onPressed: () {},
                     )),
                   ]))
               .toList(),
         );
-      }
+      },
     );
   }
 }
