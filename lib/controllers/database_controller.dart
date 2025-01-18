@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/designation.dart';
+import 'package:inventaire_cnas/models/fournisseur.dart';
 
 class DatabaseController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -10,6 +11,7 @@ class DatabaseController extends GetxController {
   // Observables for the data
   var designations = <Designation>[];
   var articles = <Article>[];
+  var fournisseurs = <Fournisseur>[];
   Designation? selectedDesignation;
   TextEditingController designationNameController = TextEditingController();
   //add prix and tva and ,articlenom controllers
@@ -18,7 +20,7 @@ class DatabaseController extends GetxController {
   TextEditingController quantityController = TextEditingController();
   TextEditingController priceHTController = TextEditingController();
   TextEditingController tvaController = TextEditingController();
-
+  TextEditingController fournisseurController = TextEditingController();
   @override
   void onInit() {
     super.onInit();
@@ -44,12 +46,21 @@ class DatabaseController extends GetxController {
     Designation designation = Designation(name: designationNameController.text);
     await _dbHelper.insertDesignation(designation);
     fetchDesignations();
+    update();
+  }
+
+// Add a new fournisseur
+  Future<void> addFournisseur() async {
+    Fournisseur fournisseur = Fournisseur(name: fournisseurController.text);
+    await _dbHelper.insertFournisseur(fournisseur);
+    fetchDesignations();
+    update();
   }
 
   // Add a new article
   Future<void> addArticle() async {
     Article article = Article(
-      articleName: articleNameController.text,
+        articleName: articleNameController.text,
         designationName: selectedDesignation!.name,
         description: descriptionController.text,
         quantity: int.parse(quantityController.text),
@@ -67,5 +78,11 @@ class DatabaseController extends GetxController {
   // a function that extracts all the names of the designations from designations list
   List<String> getDesignationNames() {
     return designations.map((designation) => designation.name).toList();
+  }
+
+  void fetchFournisseurs() async {
+    final data = await _dbHelper.getFournisseurs();
+    fournisseurs = data;
+    update();
   }
 }

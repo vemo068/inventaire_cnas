@@ -5,10 +5,13 @@ import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
+import 'package:inventaire_cnas/page/add_fournisseur.dart';
 import 'package:inventaire_cnas/page/articles_page.dart';
+import 'package:inventaire_cnas/page/list_fournisseurs.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  DatabaseController controller = Get.find<DatabaseController>();
+  HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +43,21 @@ class HomePage extends StatelessWidget {
               icon: Icons.design_services,
               label: "Add Designation",
               onPressed: () => Get.to(() => AddDesignationPage()),
+            ),
+            _buildNavigationButton(
+              context,
+              icon: Icons.add_business,
+              label: "Add Fournisseur",
+              onPressed: () => Get.to(() => const AddFournisseurPage()),
+            ),
+            _buildNavigationButton(
+              context,
+              icon: Icons.groups,
+              label: "Liste des Fournisseurs",
+              onPressed: () {
+                controller.fetchFournisseurs();
+                Get.to(() => ListFournisseursPage());
+              },
             ),
           ],
         ),

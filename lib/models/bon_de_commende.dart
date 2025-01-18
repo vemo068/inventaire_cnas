@@ -4,14 +4,14 @@ import 'package:inventaire_cnas/models/fournisseur.dart';
 class BonDeCommende {
   int id;
   String date;
-  Fournisseur fournisseur;
+  String fournisseur_id;
   DateTime dateBonDeCommende;
   double? montantTotal;
 
   BonDeCommende({
     required this.id,
     required this.date,
-    required this.fournisseur,
+    required this.fournisseur_id,
     required this.dateBonDeCommende,
     this.montantTotal,
   });
@@ -20,7 +20,7 @@ class BonDeCommende {
     return BonDeCommende(
       id: json['id'],
       date: json['date'],
-      fournisseur: Fournisseur.fromJson(json['fournisseur']),
+      fournisseur_id: json['fournisseur_id'],
       dateBonDeCommende: DateTime.parse(json['dateBonDeCommende']),
       montantTotal: json['montantTotal'],
     );
@@ -30,9 +30,13 @@ class BonDeCommende {
     return {
       'id': id,
       'date': date,
-      'fournisseur': fournisseur.toJson(),
+      'fournisseur': fournisseur_id,
       'dateBonDeCommende': dateBonDeCommende.toIso8601String(),
       'montantTotal': montantTotal,
     };
   }
+  
+  
 }
+
+

@@ -1,5 +1,6 @@
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/designation.dart';
+import 'package:inventaire_cnas/models/fournisseur.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -29,7 +30,32 @@ class DatabaseHelper {
    
     FOREIGN KEY (designationName) REFERENCES designations(name)
   )''';
-// add fournisseur table and commende table and bondecommende table with all crud fonctions 
+
+// SQL create fornisseur table
+  final String fournisseurTable = '''
+  CREATE TABLE fournisseurs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+  )''';
+
+  final String commendeTable = '''
+    CREATE TABLE commendes (
+      id TEXT PRIMARY KEY,
+      article_id INTEGER NOT NULL,
+      bonDeCommende_id INTEGER NOT NULL,
+      quantite INTEGER NOT NULL,
+      FOREIGN KEY (bonDeCommende_id) REFERENCES bonDeCommendes (id),
+      FOREIGN KEY (article_id) REFERENCES articles (id)
+    )''';
+  final String bonDeCommendeTable = '''
+    CREATE TABLE bonDeCommendes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      date TEXT NOT NULL,
+      fournisseur_id INTEGER NOT NULL,
+      dateBonDeCommende TEXT NOT NULL,
+      montantTotal REAL,
+      FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs (id)
+    )''';
 
   // Database connection initialization
   Future<Database> init() async {
@@ -42,8 +68,23 @@ class DatabaseHelper {
         // Create tables
         await db.execute(designationTable);
         await db.execute(articleTable);
+        await db.execute(fournisseurTable);
+        await db.execute(bonDeCommendeTable);
+        await db.execute(commendeTable);
       },
     );
+  }
+
+  //create CRUD Methods for fournisseur
+  Future<List<Fournisseur>> getFournisseurs() async {
+    final Database db = await init();
+    final List<Map<String, Object?>> result = await db.query("fournisseurs");
+    return result.map((e) => Fournisseur.fromJson(e)).toList();
+  }
+
+  Future<int> insertFournisseur(Fournisseur fournisseur) async {
+    final Database db = await init();
+    return db.insert("fournisseurs", fournisseur.toJson());
   }
 
   // CRUD Methods for Designations
