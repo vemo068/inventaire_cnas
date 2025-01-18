@@ -66,10 +66,18 @@ class AddArticlePage extends StatelessWidget {
                 hint: "article nom",
                 controller: databaseController.articleNameController,
               ),
+              TxtFldPC(
+                hint: "description",
+                controller: databaseController.descriptionController,
+              ),
               SizedBox(height: 16.0),
               TxtFldPC(
-                  hint: "prix",
+                  hint: "prix HT",
                   controller: databaseController.priceHTController),
+              SizedBox(height: 16.0),
+              TxtFldPC(
+                  hint: "quantite",
+                  controller: databaseController.quantityController),
               SizedBox(height: 16.0),
               TxtFldPC(
                   hint: "tva", controller: databaseController.tvaController),

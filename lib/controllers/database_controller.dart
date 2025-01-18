@@ -49,13 +49,17 @@ class DatabaseController extends GetxController {
   // Add a new article
   Future<void> addArticle() async {
     Article article = Article(
+      articleName: articleNameController.text,
         designationName: selectedDesignation!.name,
-        description: "description",
-        quantity: 15,
-        priceHT: 5,
-        montantHT: 5,
+        description: descriptionController.text,
+        quantity: int.parse(quantityController.text),
+        priceHT: double.parse(priceHTController.text),
+        montantHT: int.parse(quantityController.text) *
+            double.parse(priceHTController.text),
         tva: double.parse(tvaController.text),
-        montantTTC: 565);
+        montantTTC: int.parse(quantityController.text) *
+            double.parse(priceHTController.text) *
+            double.parse(tvaController.text));
     await _dbHelper.insertArticle(article);
     fetchArticles();
   }

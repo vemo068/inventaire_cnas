@@ -1,6 +1,7 @@
 class Article {
   int? id;
   String designationName;
+  String? articleName;
   String description;
   int quantity;
   double priceHT;
@@ -9,38 +10,41 @@ class Article {
   double montantTTC;
 
   Article({
-     this.id,
+    this.id,
+    required this.articleName,
     required this.designationName,
     required this.description,
     required this.quantity,
     required this.priceHT,
-    required this.montantHT,
+    this.montantHT = 0.0,
     required this.tva,
-    required this.montantTTC,
+    this.montantTTC = 0.0,
   });
 
   // Converts an Article instance to a JSON object.
   Map<String, dynamic> toJson() => {
         'id': id,
+        'articleName': articleName ?? '',
         'designationName': designationName,
         'description': description,
         'quantity': quantity,
         'priceHT': priceHT,
-        'montantHT': montantHT,
+        
         'tva': tva,
-        'montantTTC': montantTTC,
+        
       };
 
   // Creates an Article instance from a JSON object.
   factory Article.fromJson(Map<String, dynamic> json) => Article(
         id: json['id'],
+        articleName: json['articleName'],
         designationName: json['designationName'],
         description: json['description'],
         quantity: json['quantity'],
         priceHT: json['priceHT'],
-        montantHT: json['montantHT'],
+       
         tva: json['tva'],
-        montantTTC: json['montantTTC'],
+        
       );
 }
 

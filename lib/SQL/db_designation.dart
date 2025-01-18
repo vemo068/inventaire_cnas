@@ -5,9 +5,8 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
-
 class DatabaseHelper {
-  final String databaseName = "appDatabase.db";
+  final String databaseName = "invtcnasbase.db";
 
   // SQL to create the Designation table
   final String designationTable = '''
@@ -20,15 +19,17 @@ class DatabaseHelper {
   final String articleTable = '''
   CREATE TABLE articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    articleName TEXT NOT NULL,
     designationName TEXT NOT NULL,
     description TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     priceHT REAL NOT NULL,
-    montantHT REAL NOT NULL,
+    
     tva REAL NOT NULL,
-    montantTTC REAL NOT NULL,
+   
     FOREIGN KEY (designationName) REFERENCES designations(name)
   )''';
+// add fournisseur table and commende table and bondecommende table with all crud fonctions 
 
   // Database connection initialization
   Future<Database> init() async {
