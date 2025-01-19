@@ -35,9 +35,16 @@ class ArticlesTable extends StatelessWidget {
                         DataCell(Text(article.description)),
                         DataCell(Text(article.quantity.toString())),
                         DataCell(Text(article.priceHT.toString())),
-                        DataCell(Text((article.priceHT*article.quantity).toString())),
+                        DataCell(Text(
+                            (article.priceHT * article.quantity).toString())),
                         DataCell(Text(article.tva.toString())),
-                        DataCell(Text((article.priceHT*article.quantity*article.tva).toString())),
+                        DataCell(
+                          Text(
+                            ((article.priceHT * article.quantity) *
+                                    (article.tva / 100 + 1),)
+                                .toString(),
+                          ),
+                        ),
                         DataCell(IconButton(
                           icon: const Icon(Icons.delete),
                           onPressed: () {},

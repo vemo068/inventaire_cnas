@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/components/articles_table.dart';
+import 'package:inventaire_cnas/components/textfield_pc.dart';
+import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 
 class ArticlesPage extends StatelessWidget {
-  const ArticlesPage({super.key});
+  DatabaseController databaseController = Get.find<DatabaseController>();
+  ArticlesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,45 @@ class ArticlesPage extends StatelessWidget {
                   onPressed: () => Get.to(() => AddDesignationPage()),
                 ),
               ),
+              Expanded(
+                child: SizedBox(
+                  child: TextField(
+                    onChanged: (value) {
+                      databaseController.filterArticles();
+                    },
+                    controller: databaseController.articleSearchController,
+                    decoration: const InputDecoration(
+                      labelText: "Recherche",
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: DropdownButton<String>(
+                value: databaseController.selectedValue,
+                items: const [
+                  DropdownMenuItem(
+                    value: "data1",
+                    child: Text("data1"),
+                  ),
+                  DropdownMenuItem(
+                    value: "data2",
+                    child: Text("data2"),
+                  ),
+                  DropdownMenuItem(
+                    value: "data3",
+                    child: Text("data3"),
+                  ),
+                  DropdownMenuItem(
+                    value: "data4",
+                    child: Text("data4"),
+                  ),
+                ],
+                onChanged: (String? newValue) {
+                  databaseController.selectedValue = newValue;
+                  databaseController.update();
+                },
+              )),
             ],
           ),
           const SizedBox(height: 16.0),

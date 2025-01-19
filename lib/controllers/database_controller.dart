@@ -21,6 +21,11 @@ class DatabaseController extends GetxController {
   TextEditingController priceHTController = TextEditingController();
   TextEditingController tvaController = TextEditingController();
   TextEditingController fournisseurController = TextEditingController();
+
+  TextEditingController articleSearchController = TextEditingController();
+
+  var selectedValue;
+
   @override
   void onInit() {
     super.onInit();
@@ -37,6 +42,11 @@ class DatabaseController extends GetxController {
   // Fetch all articles from the database
   void fetchArticles() async {
     final data = await _dbHelper.getArticles();
+    articles = data;
+    update();
+  }
+  void filterArticles() async {
+    final data = await _dbHelper.filterArticles(articleSearchController.text);
     articles = data;
     update();
   }

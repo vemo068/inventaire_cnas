@@ -37,9 +37,13 @@ class ListFournisseursPage extends StatelessWidget {
                   child: ListView.builder(
                     itemCount: _databaseController.fournisseurs.length,
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        title:
-                            Text(_databaseController.fournisseurs[index].name),
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: ListTile(
+                          tileColor: Colors.grey,
+                          title: Text(
+                              _databaseController.fournisseurs[index].name),
+                        ),
                       );
                     },
                   ),

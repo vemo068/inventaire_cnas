@@ -30,7 +30,7 @@ class HomePage extends StatelessWidget {
               context,
               icon: Icons.article,
               label: "Articles",
-              onPressed: () => Get.to(() => const ArticlesPage()),
+              onPressed: () => Get.to(() =>  ArticlesPage()),
             ),
             _buildNavigationButton(
               context,

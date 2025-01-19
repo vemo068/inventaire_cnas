@@ -20,6 +20,7 @@ class TxtFldPC extends StatelessWidget {
     return SizedBox(
       width: width,
       child: TextField(
+       
         autofocus: autofocus,
         controller: controller,
         decoration: InputDecoration(
