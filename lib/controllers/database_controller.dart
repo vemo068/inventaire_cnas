@@ -4,6 +4,7 @@ import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
+import 'package:inventaire_cnas/page/add_article.dart';
 
 class DatabaseController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -30,8 +31,10 @@ class DatabaseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchAllDesignations();
     fetchArticles();
+
+    fetchFournisseurs();
+    fetchAllDesignations();
   }
 
   // Fetch all designations from the database
@@ -118,5 +121,9 @@ class DatabaseController extends GetxController {
     final data = await _dbHelper.getFournisseurs();
     fournisseurs = data;
     update();
+  }
+
+  void goToAddArticle() async {
+    Get.to(() => AddArticlePage());
   }
 }

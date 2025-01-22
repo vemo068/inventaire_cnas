@@ -31,8 +31,6 @@ class HomePage extends StatelessWidget {
               icon: Icons.article,
               label: "Articles",
               onPressed: () {
-                controller.fetchDesignations();
-                controller.fetchAllDesignations();
                 Get.to(() => ArticlesPage());
               },
             ),
@@ -40,9 +38,8 @@ class HomePage extends StatelessWidget {
               context,
               icon: Icons.add,
               label: "Add Article",
-              onPressed: () {
-                controller.fetchDesignations();
-                controller.fetchAllDesignations();
+              onPressed: () async {
+                controller.update();
                 Get.to(() => AddArticlePage());
               },
             ),
@@ -62,8 +59,7 @@ class HomePage extends StatelessWidget {
               context,
               icon: Icons.groups,
               label: "Liste des Fournisseurs",
-              onPressed: () {
-                controller.fetchFournisseurs();
+              onPressed: () async {
                 Get.to(() => ListFournisseursPage());
               },
             ),

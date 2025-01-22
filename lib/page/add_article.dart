@@ -23,7 +23,7 @@ class AddArticlePage extends StatelessWidget {
             children: <Widget>[
               GetBuilder<DatabaseController>(
                 builder: (_) {
-                  if (databaseController.getDesignationNames().isEmpty) {
+                  if (databaseController.designations.isEmpty) {
                     return Text('No designations available');
                   } else {
                     return SingleChildScrollView(
