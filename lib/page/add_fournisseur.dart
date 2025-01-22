@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/components/textfield_pc.dart';
@@ -39,7 +40,8 @@ class _AddFournisseurPageState extends State<AddFournisseurPage> {
                   Get.back();
                 },
                 child: const Text('Add Fournisseur'),
-              )
+              ),
+             
             ],
           ),
         ),

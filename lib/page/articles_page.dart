@@ -3,13 +3,20 @@ import 'package:get/get.dart';
 import 'package:inventaire_cnas/components/articles_table.dart';
 import 'package:inventaire_cnas/components/textfield_pc.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
+import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 
-class ArticlesPage extends StatelessWidget {
-  DatabaseController databaseController = Get.find<DatabaseController>();
+class ArticlesPage extends StatefulWidget {
   ArticlesPage({super.key});
 
+  @override
+  State<ArticlesPage> createState() => _ArticlesPageState();
+}
+
+class _ArticlesPageState extends State<ArticlesPage> {
+  DatabaseController databaseController = Get.find<DatabaseController>();
+  Designation? selectedLocalDesignation;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,29 +58,20 @@ class ArticlesPage extends StatelessWidget {
                 ),
               ),
               Expanded(
-                  child: DropdownButton<String>(
-                value: databaseController.selectedValue,
-                items: const [
-                  DropdownMenuItem(
-                    value: "data1",
-                    child: Text("data1"),
-                  ),
-                  DropdownMenuItem(
-                    value: "data2",
-                    child: Text("data2"),
-                  ),
-                  DropdownMenuItem(
-                    value: "data3",
-                    child: Text("data3"),
-                  ),
-                  DropdownMenuItem(
-                    value: "data4",
-                    child: Text("data4"),
-                  ),
-                ],
-                onChanged: (String? newValue) {
-                  databaseController.selectedValue = newValue;
-                  databaseController.update();
+                  child: DropdownButton<Designation>(
+                value: selectedLocalDesignation,
+                items: databaseController.designations.map((designation) {
+                  return DropdownMenuItem<Designation>(
+                    value: designation,
+                    child: Text(designation.name),
+                  );
+                }).toList(),
+                onChanged: (Designation? newValue) {
+                  setState(() {
+                    selectedLocalDesignation = newValue;
+                    databaseController.filterArticlesByDesignation();
+                    databaseController.update();
+                  });
                 },
               )),
             ],

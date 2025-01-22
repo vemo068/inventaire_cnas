@@ -10,6 +10,7 @@ class DatabaseController extends GetxController {
 
   // Observables for the data
   var designations = <Designation>[];
+  var allDesignations = <Designation>[];
   var articles = <Article>[];
   var fournisseurs = <Fournisseur>[];
   Designation? selectedDesignation;
@@ -29,7 +30,7 @@ class DatabaseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchDesignations();
+    fetchAllDesignations();
     fetchArticles();
   }
 
@@ -39,14 +40,37 @@ class DatabaseController extends GetxController {
     designations = data;
   }
 
+  void fetchAllDesignations() async {
+    final data = await _dbHelper.getDesignations();
+    allDesignations = data;
+  }
+
+  String getDesignationNameByid(int idddd) {
+// Find the designation with the matching id
+    var designation = allDesignations.firstWhere(
+      (d) => d.id == idddd,
+      // Return 'Unknown' if not found
+    );
+
+    return designation.name;
+  }
+
   // Fetch all articles from the database
   void fetchArticles() async {
     final data = await _dbHelper.getArticles();
     articles = data;
     update();
   }
+
   void filterArticles() async {
     final data = await _dbHelper.filterArticles(articleSearchController.text);
+    articles = data;
+    update();
+  }
+
+  void filterArticlesByDesignation() async {
+    final data =
+        await _dbHelper.filterArticlesByDesignation(selectedDesignation);
     articles = data;
     update();
   }
@@ -71,7 +95,7 @@ class DatabaseController extends GetxController {
   Future<void> addArticle() async {
     Article article = Article(
         articleName: articleNameController.text,
-        designationName: selectedDesignation!.name,
+        designation_id: selectedDesignation!.id!,
         description: descriptionController.text,
         quantity: int.parse(quantityController.text),
         priceHT: double.parse(priceHTController.text),

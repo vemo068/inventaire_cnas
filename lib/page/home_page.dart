@@ -30,13 +30,21 @@ class HomePage extends StatelessWidget {
               context,
               icon: Icons.article,
               label: "Articles",
-              onPressed: () => Get.to(() =>  ArticlesPage()),
+              onPressed: () {
+                controller.fetchDesignations();
+                controller.fetchAllDesignations();
+                Get.to(() => ArticlesPage());
+              },
             ),
             _buildNavigationButton(
               context,
               icon: Icons.add,
               label: "Add Article",
-              onPressed: () => Get.to(() => AddArticlePage()),
+              onPressed: () {
+                controller.fetchDesignations();
+                controller.fetchAllDesignations();
+                Get.to(() => AddArticlePage());
+              },
             ),
             _buildNavigationButton(
               context,

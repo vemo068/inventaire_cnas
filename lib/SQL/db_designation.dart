@@ -21,14 +21,14 @@ class DatabaseHelper {
   CREATE TABLE articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     articleName TEXT NOT NULL,
-    designationName TEXT NOT NULL,
+    designation_id INTEGER NOT NULL,
     description TEXT NOT NULL,
     quantity INTEGER NOT NULL,
     priceHT REAL NOT NULL,
     
     tva REAL NOT NULL,
    
-    FOREIGN KEY (designationName) REFERENCES designations(name)
+    FOREIGN KEY (designation_id) REFERENCES designations(id)
   )''';
 
 // SQL create fornisseur table
@@ -153,8 +153,18 @@ class DatabaseHelper {
   Future<List<Article>> filterArticles(String keyword) async {
     final Database db = await init();
     final List<Map<String, Object?>> result = await db.rawQuery(
-      "SELECT * FROM articles WHERE description LIKE ?",
+      "SELECT * FROM articles WHERE articleName LIKE ?",
       ["%$keyword%"],
+    );
+    return result.map((e) => Article.fromJson(e)).toList();
+  }
+
+  Future<List<Article>> filterArticlesByDesignation(
+      Designation? selectedDesignation) async {
+    final Database db = await init();
+    final List<Map<String, Object?>> result = await db.rawQuery(
+      "SELECT * FROM articles WHERE designation_id = ?",
+      ["%${selectedDesignation!.id}%"],
     );
     return result.map((e) => Article.fromJson(e)).toList();
   }

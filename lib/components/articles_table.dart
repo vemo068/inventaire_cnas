@@ -30,7 +30,8 @@ class ArticlesTable extends StatelessWidget {
               ],
               rows: controller.articles
                   .map((article) => DataRow(cells: [
-                        DataCell(Text(article.designationName)),
+                        DataCell(Text(controller
+                            .getDesignationNameByid(article.designation_id))),
                         DataCell(Text(article.articleName ?? '')),
                         DataCell(Text(article.description)),
                         DataCell(Text(article.quantity.toString())),
@@ -40,9 +41,10 @@ class ArticlesTable extends StatelessWidget {
                         DataCell(Text(article.tva.toString())),
                         DataCell(
                           Text(
-                            ((article.priceHT * article.quantity) *
-                                    (article.tva / 100 + 1),)
-                                .toString(),
+                            (
+                              (article.priceHT * article.quantity) *
+                                  (article.tva / 100 + 1),
+                            ).toString(),
                           ),
                         ),
                         DataCell(IconButton(
