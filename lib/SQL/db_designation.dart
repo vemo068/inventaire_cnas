@@ -1,5 +1,6 @@
 import 'package:inventaire_cnas/SQL/tables.dart';
 import 'package:inventaire_cnas/models/article.dart';
+import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -10,7 +11,6 @@ import 'package:path/path.dart';
 class DatabaseHelper {
   final String databaseName = "invtcnasbase.db";
 
- 
   // Database connection initialization
   Future<Database> init() async {
     final databasePath = await getApplicationDocumentsDirectory();
@@ -116,10 +116,51 @@ class DatabaseHelper {
   Future<List<Article>> filterArticlesByDesignation(
       Designation? selectedDesignation) async {
     final Database db = await init();
-    int des_id = selectedDesignation!.id!;
+    int desId = selectedDesignation!.id!;
     final List<Map<String, Object?>> result = await db.rawQuery(
-      "SELECT * FROM articles WHERE designation_id = $des_id",
+      "SELECT * FROM articles WHERE designation_id = $desId",
     );
     return result.map((e) => Article.fromJson(e)).toList();
+  }
+
+  // insert bondecommende
+  Future<int> insertBonDeCommende(BonDeCommende bonDeCommende) async {
+    final Database db = await init();
+    return db.insert("bonDeCommendes", bonDeCommende.toJson());
+  }
+
+  // get bondecommende
+  Future<List<BonDeCommende>> getBonDeCommendes() async {
+    final Database db = await init();
+    final List<Map<String, Object?>> result = await db.query("bonDeCommendes");
+    return result.map((e) => BonDeCommende.fromJson(e)).toList();
+  }
+
+  // update bondecommende
+  Future<int> updateBonDeCommende(
+      int id, BonDeCommende updatedBonDeCommende) async {
+    final Database db = await init();
+    return db.update(
+      "bonDeCommendes",
+      updatedBonDeCommende.toJson(),
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  // delete bondecommende
+  Future<int> deleteBonDeCommende(int id) async {
+    final Database db = await init();
+    return db.delete("bonDeCommendes", where: "id = ?", whereArgs: [id]);
+  }
+
+  // filter bondecommende
+  Future<List<BonDeCommende>> filterBonDeCommendes(String keyword) async {
+    final Database db = await init();
+    final List<Map<String, Object?>> result = await db.rawQuery(
+      "SELECT * FROM bonDeCommendes WHERE date LIKE ?",
+      ["%$keyword%"],
+    );
+    return result.map((e) => BonDeCommende.fromJson(e)).toList();
   }
 }

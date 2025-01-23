@@ -8,6 +8,7 @@ import 'package:inventaire_cnas/page/add_bon_de_commende.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 import 'package:inventaire_cnas/page/add_fournisseur.dart';
 import 'package:inventaire_cnas/page/articles_page.dart';
+import 'package:inventaire_cnas/page/bon_commendes.dart';
 import 'package:inventaire_cnas/page/list_fournisseurs.dart';
 
 class HomePage extends StatelessWidget {
@@ -22,8 +23,9 @@ class HomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 6,
+        child: GridView.extent(
+          // crossAxisCount: 6,
+          maxCrossAxisExtent: 200,
           crossAxisSpacing: 16.0,
           mainAxisSpacing: 16.0,
           children: [
@@ -69,7 +71,15 @@ class HomePage extends StatelessWidget {
               icon: Icons.add_chart_rounded,
               label: "Ajoute bon de commende",
               onPressed: () async {
-                Get.to(() => AddBonDeCommendePage());
+                Get.to(() => const AddBonDeCommandePage());
+              },
+            ),
+            _buildNavigationButton(
+              context,
+              icon: Icons.insert_chart_outlined_rounded,
+              label: "List des bon de commende",
+              onPressed: () async {
+                Get.to(() => const BonCommendesPage());
               },
             ),
           ],

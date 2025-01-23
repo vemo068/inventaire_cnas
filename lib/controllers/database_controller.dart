@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/article.dart';
+import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
@@ -14,7 +15,9 @@ class DatabaseController extends GetxController {
   var allDesignations = <Designation>[];
   var articles = <Article>[];
   var fournisseurs = <Fournisseur>[];
+  List<BonDeCommende> bonDeCommendes = [];
   Designation? selectedDesignation;
+  Fournisseur? selectedFournisseur;
   TextEditingController designationNameController = TextEditingController();
   //add prix and tva and ,articlenom controllers
   TextEditingController articleNameController = TextEditingController();
@@ -33,7 +36,7 @@ class DatabaseController extends GetxController {
     super.onInit();
     fetchDesignations();
     fetchArticles();
-
+    fetchBonDeCommendes();
     fetchFournisseurs();
     fetchAllDesignations();
   }
@@ -42,6 +45,11 @@ class DatabaseController extends GetxController {
   void fetchDesignations() async {
     final data = await _dbHelper.getDesignations();
     designations = data;
+  }
+
+  void fetchBonDeCommendes() async {
+    final data = await _dbHelper.getBonDeCommendes();
+    bonDeCommendes = data;
   }
 
   void fetchAllDesignations() async {
@@ -117,6 +125,18 @@ class DatabaseController extends GetxController {
             double.parse(tvaController.text));
     await _dbHelper.insertArticle(article);
     fetchArticles();
+  }
+
+  // Add a new bon de commendes
+  void addBonDeCommende() async {
+    BonDeCommende bonDeCommende = BonDeCommende(
+      date: DateTime.now().toString(),
+      fournisseur_id: selectedFournisseur!.id!,
+      dateBonDeCommende: DateTime.now(),
+      montantTotal: 0.0,
+    );
+    await _dbHelper.insertBonDeCommende(bonDeCommende);
+    fetchBonDeCommendes();
   }
 
   // a function that extracts all the names of the designations from designations list

@@ -60,3 +60,4 @@ class ArticlesTable extends StatelessWidget {
     );
   }
 }
+
