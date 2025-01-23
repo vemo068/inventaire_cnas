@@ -4,6 +4,7 @@ import 'package:inventaire_cnas/components/articles_table.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
+import 'package:inventaire_cnas/page/add_bon_de_commende.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 import 'package:inventaire_cnas/page/add_fournisseur.dart';
 import 'package:inventaire_cnas/page/articles_page.dart';
@@ -61,6 +62,14 @@ class HomePage extends StatelessWidget {
               label: "Liste des Fournisseurs",
               onPressed: () async {
                 Get.to(() => ListFournisseursPage());
+              },
+            ),
+            _buildNavigationButton(
+              context,
+              icon: Icons.add_chart_rounded,
+              label: "Ajoute bon de commende",
+              onPressed: () async {
+                Get.to(() => AddBonDeCommendePage());
               },
             ),
           ],
