@@ -61,14 +61,19 @@ class _ArticlesPageState extends State<ArticlesPage> {
                   child: DropdownButton<Designation>(
                 value: selectedLocalDesignation,
                 items: databaseController.designations.map((designation) {
-                  return DropdownMenuItem<Designation>(
-                    value: designation,
-                    child: Text(designation.name),
-                  );
-                }).toList(),
+                      return DropdownMenuItem<Designation>(
+                        value: designation,
+                        child: Text(designation.name),
+                      );
+                    }).toList() +
+                    [
+                      DropdownMenuItem<Designation>(
+                          value: null, child: Text("All"))
+                    ],
                 onChanged: (Designation? newValue) {
                   setState(() {
                     selectedLocalDesignation = newValue;
+                    databaseController.selectedDesignation = newValue;
                     databaseController.filterArticlesByDesignation();
                     databaseController.update();
                   });

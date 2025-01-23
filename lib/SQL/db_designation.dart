@@ -162,9 +162,9 @@ class DatabaseHelper {
   Future<List<Article>> filterArticlesByDesignation(
       Designation? selectedDesignation) async {
     final Database db = await init();
+    int des_id = selectedDesignation!.id!;
     final List<Map<String, Object?>> result = await db.rawQuery(
-      "SELECT * FROM articles WHERE designation_id = ?",
-      ["%${selectedDesignation!.id}%"],
+      "SELECT * FROM articles WHERE designation_id = $des_id",
     );
     return result.map((e) => Article.fromJson(e)).toList();
   }

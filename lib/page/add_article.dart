@@ -4,9 +4,14 @@ import 'package:inventaire_cnas/components/textfield_pc.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 
-class AddArticlePage extends StatelessWidget {
-  final DatabaseController databaseController = Get.find<DatabaseController>();
+class AddArticlePage extends StatefulWidget {
+  @override
+  State<AddArticlePage> createState() => _AddArticlePageState();
+}
 
+class _AddArticlePageState extends State<AddArticlePage> {
+  final DatabaseController databaseController = Get.find<DatabaseController>();
+  var selectedLocalDesignation;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,38 +31,26 @@ class AddArticlePage extends StatelessWidget {
                   if (databaseController.designations.isEmpty) {
                     return Text('No designations available');
                   } else {
-                    return SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: databaseController.designations
-                            .map((Designation value) {
-                          return GestureDetector(
-                            onTap: () {
-                              databaseController.selectedDesignation = value;
+                    return SizedBox(
+                        height: 50,
+                        child: DropdownButton<Designation>(
+                          value: selectedLocalDesignation,
+                          items: databaseController.designations
+                              .map((designation) {
+                            return DropdownMenuItem<Designation>(
+                              value: designation,
+                              child: Text(designation.name),
+                            );
+                          }).toList(),
+                          onChanged: (Designation? newValue) {
+                            setState(() {
+                              selectedLocalDesignation = newValue;
+                              databaseController.selectedDesignation = newValue;
+
                               databaseController.update();
-                            },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 8.0),
-                              margin: EdgeInsets.symmetric(horizontal: 4.0),
-                              decoration: BoxDecoration(
-                                color: databaseController.selectedDesignation ==
-                                        value
-                                    ? Colors.blue
-                                    : Colors.grey,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Text(
-                                value.name,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
-                    );
+                            });
+                          },
+                        ));
                   }
                 },
               ),

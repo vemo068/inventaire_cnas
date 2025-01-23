@@ -31,6 +31,7 @@ class DatabaseController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    fetchDesignations();
     fetchArticles();
 
     fetchFournisseurs();
@@ -72,9 +73,14 @@ class DatabaseController extends GetxController {
   }
 
   void filterArticlesByDesignation() async {
-    final data =
-        await _dbHelper.filterArticlesByDesignation(selectedDesignation);
-    articles = data;
+    if (selectedDesignation == null) {
+      fetchArticles();
+    } else {
+      final data =
+          await _dbHelper.filterArticlesByDesignation(selectedDesignation);
+      articles = data;
+    }
+
     update();
   }
 
@@ -83,6 +89,7 @@ class DatabaseController extends GetxController {
     Designation designation = Designation(name: designationNameController.text);
     await _dbHelper.insertDesignation(designation);
     fetchDesignations();
+    fetchAllDesignations();
     update();
   }
 
@@ -90,7 +97,7 @@ class DatabaseController extends GetxController {
   Future<void> addFournisseur() async {
     Fournisseur fournisseur = Fournisseur(name: fournisseurController.text);
     await _dbHelper.insertFournisseur(fournisseur);
-    fetchDesignations();
+    fetchFournisseurs();
     update();
   }
 
