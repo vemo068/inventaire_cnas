@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/bon_de_commende.dart';
+import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
@@ -11,13 +12,23 @@ class DatabaseController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
   // Observables for the data
-  var designations = <Designation>[];
+  
   var allDesignations = <Designation>[];
+  var allArticles = <Article>[];
+  var allFournisseurs = <Fournisseur>[];
+  var allBonDeCommendes = <BonDeCommende>[];
+
+var designations = <Designation>[];
   var articles = <Article>[];
   var fournisseurs = <Fournisseur>[];
+  List<Commende> commendes = [];
   List<BonDeCommende> bonDeCommendes = [];
+
+  Commende? selectedCommende;
   Designation? selectedDesignation;
   Fournisseur? selectedFournisseur;
+  BonDeCommende? selectedBonDeCommende;
+
   TextEditingController designationNameController = TextEditingController();
   //add prix and tva and ,articlenom controllers
   TextEditingController articleNameController = TextEditingController();
@@ -39,6 +50,9 @@ class DatabaseController extends GetxController {
     fetchBonDeCommendes();
     fetchFournisseurs();
     fetchAllDesignations();
+    fetchAllArticles();
+    fetchAllFournisseurs();
+    fetchAllBonDeCommendes();
   }
 
   // Fetch all designations from the database
@@ -57,6 +71,22 @@ class DatabaseController extends GetxController {
     allDesignations = data;
   }
 
+  void fetchAllArticles() async {
+    final data = await _dbHelper.getArticles();
+    allArticles = data;
+  }
+
+  void fetchAllFournisseurs() async {
+    final data = await _dbHelper.getFournisseurs();
+    allFournisseurs = data;
+  }
+
+  void fetchAllBonDeCommendes() async {
+    final data = await _dbHelper.getBonDeCommendes();
+    allBonDeCommendes = data;
+  }
+
+
   String getDesignationNameByid(int idddd) {
 // Find the designation with the matching id
     var designation = allDesignations.firstWhere(
@@ -65,6 +95,10 @@ class DatabaseController extends GetxController {
     );
 
     return designation.name;
+  }
+
+  Article getArticleById(int id) {
+    return allArticles.firstWhere((article) => article.id == id);
   }
 
   // Fetch all articles from the database
@@ -139,6 +173,20 @@ class DatabaseController extends GetxController {
     fetchBonDeCommendes();
   }
 
+  // update BonDeCommende
+
+  void updateBonDeCommende() async {
+    BonDeCommende bonDeCommende = BonDeCommende(
+      id: selectedBonDeCommende!.id,
+      date: selectedBonDeCommende!.date,
+      fournisseur_id: selectedFournisseur!.id!,
+      dateBonDeCommende: selectedBonDeCommende!.dateBonDeCommende,
+      montantTotal: selectedBonDeCommende!.montantTotal,
+    );
+    await _dbHelper.updateBonDeCommende(bonDeCommende);
+    fetchBonDeCommendes();
+  }
+
   // a function that extracts all the names of the designations from designations list
   List<String> getDesignationNames() {
     return designations.map((designation) => designation.name).toList();
@@ -150,7 +198,16 @@ class DatabaseController extends GetxController {
     update();
   }
 
-  void goToAddArticle() async {
-    Get.to(() => AddArticlePage());
+  void deleteCommende() async {
+    await _dbHelper.deleteCommende(selectedCommende!.id!);
+    fetchCommendes();
   }
+  
+  void fetchCommendes() async {
+    final data = await _dbHelper.getCommendes();
+    commendes = data;
+    update();
+  }
+
+  
 }

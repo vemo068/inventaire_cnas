@@ -29,7 +29,7 @@
 
   final String commendeTable = '''
     CREATE TABLE commendes (
-      id TEXT PRIMARY KEY,
+      id INTEGER PRIMARY KEY,
       article_id INTEGER NOT NULL,
       bonDeCommende_id INTEGER NOT NULL,
       quantite INTEGER NOT NULL,

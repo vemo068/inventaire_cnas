@@ -28,8 +28,10 @@ class BonDeCommandeTable extends StatelessWidget {
                         DataCell(Text(commande.fournisseur_id.toString())),
                         DataCell(Text(commande.montantTotal.toString())),
                         DataCell(IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {},
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            
+                          },
                         )),
                       ]))
                   .toList(),

@@ -1,7 +1,7 @@
 class Article {
   int? id;
   int designation_id;
-  String? articleName;
+  String articleName;
   String description;
   int quantity;
   double priceHT;

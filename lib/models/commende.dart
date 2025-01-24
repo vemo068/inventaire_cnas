@@ -3,16 +3,16 @@ import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
 
 class Commende {
-  String? id;
+  int? id;
   
-  Article article;
+  int article_id;
   int quantite;
   BonDeCommende bonDeCommende;
 
   Commende({
     this.id,
    
-    required this.article,
+    required this.article_id,
     required this.quantite,
     required this.bonDeCommende,
   });
@@ -21,7 +21,7 @@ class Commende {
   Map<String, dynamic> toJson() => {
         'id': id,
        
-        'article': article.toJson(),
+        'article_id': article_id,
         'quantite': quantite,
         'bonDeCommende': bonDeCommende.toJson(),
       };
@@ -31,7 +31,7 @@ class Commende {
         id: json['id'],
         bonDeCommende: BonDeCommende.fromJson(json['bonDeCommende']),
        
-        article: Article.fromJson(json['article']),
+        article_id: json['article_id'],
         quantite: json['quantite'],
       );
 }

@@ -1,6 +1,7 @@
 import 'package:inventaire_cnas/SQL/tables.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/bon_de_commende.dart';
+import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -138,13 +139,13 @@ class DatabaseHelper {
 
   // update bondecommende
   Future<int> updateBonDeCommende(
-      int id, BonDeCommende updatedBonDeCommende) async {
+      BonDeCommende updatedBonDeCommende) async {
     final Database db = await init();
     return db.update(
       "bonDeCommendes",
       updatedBonDeCommende.toJson(),
       where: "id = ?",
-      whereArgs: [id],
+      whereArgs: [updatedBonDeCommende.id],
     );
   }
 
@@ -162,5 +163,36 @@ class DatabaseHelper {
       ["%$keyword%"],
     );
     return result.map((e) => BonDeCommende.fromJson(e)).toList();
+  }
+
+
+  // insert commende
+  Future<int> insertCommende(Commende commende) async {
+    final Database db = await init();
+    return db.insert("commendes", commende.toJson());
+  }
+
+  // get commende
+  Future<List<Commende>> getCommendes() async {
+    final Database db = await init();
+    final List<Map<String, Object?>> result = await db.query("commendes");
+    return result.map((e) => Commende.fromJson(e)).toList();
+  }
+
+  // update commende
+  Future<int> updateCommende(Commende updatedCommende) async {
+    final Database db = await init();
+    return db.update(
+      "commendes",
+      updatedCommende.toJson(),
+      where: "id = ?",
+      whereArgs: [updatedCommende.id],
+    );
+  }
+
+  // delete commende
+  Future<int> deleteCommende(int id) async {
+    final Database db = await init();
+    return db.delete("commendes", where: "id = ?", whereArgs: [id]);
   }
 }
