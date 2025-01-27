@@ -14,13 +14,21 @@ class Commendes extends StatelessWidget {
     return GetBuilder<DatabaseController>(
       init: databaseController,
       builder: (_) {
-        if (databaseController.commendes.isEmpty) {
+        if (databaseController.commendes
+            .where((element) =>
+                element.bonDeCommende_id ==
+                databaseController.selectedBonDeCommende!.id)
+            .isEmpty) {
           return const Center(
             child: Text("No Commendes."),
           );
         } else {
           return ListView.builder(
-            itemCount: databaseController.commendes.length,
+            itemCount: databaseController.commendes
+                .where((element) =>
+                    element.bonDeCommende_id ==
+                    databaseController.selectedBonDeCommende!.id)
+                .length,
             itemBuilder: (context, index) {
               return CommendeTile(
                 commende: databaseController.commendes[index],
@@ -42,12 +50,14 @@ class CommendeTile extends StatelessWidget {
   Widget build(BuildContext context) {
     Article article = databaseController.allArticles
         .firstWhere((element) => element.id == commende.article_id);
-    double total = (article.priceHT * (article.tva / 100)) * commende.quantite;
+    double total =
+        (article.priceHT * (article.tva / 100 + 1)) * commende.quantite;
     return Column(
       children: [
         ListTile(
           onLongPress: () {
             databaseController.selectedCommende = commende;
+            databaseController.selectedArticleToUpdate = article;
             Get.defaultDialog(
               backgroundColor: Colors.green[200],
               title: "Supprimer",
@@ -59,7 +69,7 @@ class CommendeTile extends StatelessWidget {
               middleText: "Are you sure you want to delete this commende?",
               onConfirm: () {
                 databaseController.selectedCommende = commende;
-                databaseController.deleteCommende();
+                databaseController.removeCommende();
                 //databaseController.updateBonDeCommende(total);
               },
               onCancel: () {

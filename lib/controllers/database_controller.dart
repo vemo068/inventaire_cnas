@@ -22,6 +22,7 @@ class DatabaseController extends GetxController {
   var fournisseurs = <Fournisseur>[];
   List<Commende> commendes = [];
   List<BonDeCommende> bonDeCommendes = [];
+  List<Commende> selectedComments = [];
 
   Commende? selectedCommende;
   Designation? selectedDesignation;
@@ -44,6 +45,8 @@ class DatabaseController extends GetxController {
   Designation? selectedDesignationForCommende;
   Fournisseur? selectedFournisseurForCommende;
   TextEditingController quantityControllerForCommende = TextEditingController();
+
+  Article? selectedArticleToUpdate;
 
   var selectedValue;
 
@@ -179,15 +182,16 @@ class DatabaseController extends GetxController {
 
   // update BonDeCommende
 
-  void updateBonDeCommende() async {
+  void updateBonDeCommende(double total) async {
     BonDeCommende bonDeCommende = BonDeCommende(
       id: selectedBonDeCommende!.id,
       date: selectedBonDeCommende!.date,
       fournisseur_id: selectedBonDeCommende!.fournisseur_id,
       dateBonDeCommende: selectedBonDeCommende!.dateBonDeCommende,
-      montantTotal: selectedBonDeCommende!.montantTotal,
+      montantTotal: selectedBonDeCommende!.montantTotal! + total,
     );
     await _dbHelper.updateBonDeCommende(bonDeCommende);
+    selectedBonDeCommende = bonDeCommende;
     fetchBonDeCommendes();
   }
 
@@ -202,11 +206,6 @@ class DatabaseController extends GetxController {
     update();
   }
 
-  void deleteCommende() async {
-    await _dbHelper.deleteCommende(selectedCommende!.id!);
-    fetchCommendes();
-  }
-
   void fetchCommendes() async {
     final data = await _dbHelper.getCommendes();
     commendes = data;
@@ -214,17 +213,68 @@ class DatabaseController extends GetxController {
   }
 
   void addCommende() async {
-    double total = selectedArticleForCommende!.priceHT *
-        double.parse(quantityControllerForCommende.text);
-    selectedBonDeCommende!.montantTotal =
-        total + selectedBonDeCommende!.montantTotal!;
+    //  selectedArticleToUpdate = allArticles
+    // .firstWhere((element) => element.id == selectedArticleForCommende!.id);
+    double total = (selectedArticleForCommende!.priceHT *
+            double.parse(quantityControllerForCommende.text)) *
+        (selectedArticleForCommende!.tva / 100 + 1);
+
     Commende commende = Commende(
       article_id: selectedArticleForCommende!.id!,
       bonDeCommende_id: selectedBonDeCommende!.id!,
       quantite: int.parse(quantityControllerForCommende.text),
     );
     await _dbHelper.insertCommende(commende);
-    updateBonDeCommende();
+    updateBonDeCommende(total);
+    updateArticleAddingQuantity(commende.quantite);
     fetchCommendes();
+  }
+
+  void removeCommende() async {
+    // selectedArticleToUpdate = allArticles
+    //     .firstWhere((element) => element.id == selectedCommende!.article_id);
+    double total = (selectedArticleForCommende!.priceHT *
+            double.parse(quantityControllerForCommende.text)) *
+        (selectedArticleForCommende!.tva / 100 + 1);
+    await _dbHelper.deleteCommende(selectedCommende!.id!);
+    updateBonDeCommende(-total);
+    updateArticleSubstractingQuantity(selectedCommende!.quantite);
+    fetchCommendes();
+  }
+
+  //update Article
+  void updateArticleAddingQuantity(int added_quantity) async {
+    Article article = Article(
+      id: selectedArticleToUpdate!.id,
+      articleName: selectedArticleToUpdate!.articleName,
+      designation_id: selectedArticleToUpdate!.designation_id,
+      description: selectedArticleToUpdate!.description,
+      quantity: selectedArticleToUpdate!.quantity + added_quantity,
+      priceHT: selectedArticleToUpdate!.priceHT,
+      montantHT: selectedArticleToUpdate!.montantHT,
+      tva: selectedArticleToUpdate!.tva,
+      montantTTC: selectedArticleToUpdate!.montantTTC,
+    );
+    await _dbHelper.updateArticle(selectedArticleToUpdate!.id!, article);
+    fetchArticles();
+    fetchAllArticles();
+  }
+
+  void updateArticleSubstractingQuantity(int substracted_quantity) async {
+    int quantityy = selectedArticleToUpdate!.quantity - substracted_quantity;
+    Article article = Article(
+      id: selectedArticleForCommende!.id,
+      articleName: selectedArticleToUpdate!.articleName,
+      designation_id: selectedArticleToUpdate!.designation_id,
+      description: selectedArticleToUpdate!.description,
+      quantity: quantityy,
+      priceHT: selectedArticleToUpdate!.priceHT,
+      montantHT: selectedArticleToUpdate!.montantHT,
+      tva: selectedArticleToUpdate!.tva,
+      montantTTC: selectedArticleToUpdate!.montantTTC,
+    );
+    await _dbHelper.updateArticle(selectedArticleToUpdate!.id!, article);
+    fetchArticles();
+    fetchAllArticles();
   }
 }

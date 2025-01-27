@@ -34,6 +34,14 @@ class BonDeCommandeTable extends StatelessWidget {
                             databaseController.fetchCommendes();
                             databaseController.selectedBonDeCommende =
                                 bDCommende;
+                            databaseController.selectedComments =
+                                databaseController
+                                    .commendes
+                                    .where((element) =>
+                                        element.bonDeCommende_id ==
+                                        bDCommende.id)
+                                    .toList();
+                            databaseController.update();
                             Get.to(() => EditBonCommendePage());
                           },
                         )),
