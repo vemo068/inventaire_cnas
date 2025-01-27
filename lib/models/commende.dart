@@ -7,14 +7,14 @@ class Commende {
   
   int article_id;
   int quantite;
-  BonDeCommende bonDeCommende;
+  int bonDeCommende_id;
 
   Commende({
     this.id,
    
     required this.article_id,
     required this.quantite,
-    required this.bonDeCommende,
+    required this.bonDeCommende_id,
   });
 
   // Converts an Article instance to a JSON object.
@@ -23,13 +23,13 @@ class Commende {
        
         'article_id': article_id,
         'quantite': quantite,
-        'bonDeCommende': bonDeCommende.toJson(),
+        'bonDeCommende_id': bonDeCommende_id,
       };
 
   // Creates an Article instance from a JSON object.
   factory Commende.fromJson(Map<String, dynamic> json) => Commende(
         id: json['id'],
-        bonDeCommende: BonDeCommende.fromJson(json['bonDeCommende']),
+        bonDeCommende_id: json['bonDeCommende_id'],
        
         article_id: json['article_id'],
         quantite: json['quantite'],

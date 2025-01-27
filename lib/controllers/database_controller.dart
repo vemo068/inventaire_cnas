@@ -6,19 +6,18 @@ import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
-import 'package:inventaire_cnas/page/add_article.dart';
 
 class DatabaseController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
 
   // Observables for the data
-  
+
   var allDesignations = <Designation>[];
   var allArticles = <Article>[];
   var allFournisseurs = <Fournisseur>[];
   var allBonDeCommendes = <BonDeCommende>[];
 
-var designations = <Designation>[];
+  var designations = <Designation>[];
   var articles = <Article>[];
   var fournisseurs = <Fournisseur>[];
   List<Commende> commendes = [];
@@ -39,6 +38,12 @@ var designations = <Designation>[];
   TextEditingController fournisseurController = TextEditingController();
 
   TextEditingController articleSearchController = TextEditingController();
+
+  // l'ajoute d'une commende
+  Article? selectedArticleForCommende;
+  Designation? selectedDesignationForCommende;
+  Fournisseur? selectedFournisseurForCommende;
+  TextEditingController quantityControllerForCommende = TextEditingController();
 
   var selectedValue;
 
@@ -85,7 +90,6 @@ var designations = <Designation>[];
     final data = await _dbHelper.getBonDeCommendes();
     allBonDeCommendes = data;
   }
-
 
   String getDesignationNameByid(int idddd) {
 // Find the designation with the matching id
@@ -179,7 +183,7 @@ var designations = <Designation>[];
     BonDeCommende bonDeCommende = BonDeCommende(
       id: selectedBonDeCommende!.id,
       date: selectedBonDeCommende!.date,
-      fournisseur_id: selectedFournisseur!.id!,
+      fournisseur_id: selectedBonDeCommende!.fournisseur_id,
       dateBonDeCommende: selectedBonDeCommende!.dateBonDeCommende,
       montantTotal: selectedBonDeCommende!.montantTotal,
     );
@@ -202,12 +206,25 @@ var designations = <Designation>[];
     await _dbHelper.deleteCommende(selectedCommende!.id!);
     fetchCommendes();
   }
-  
+
   void fetchCommendes() async {
     final data = await _dbHelper.getCommendes();
     commendes = data;
     update();
   }
 
-  
+  void addCommende() async {
+    double total = selectedArticleForCommende!.priceHT *
+        double.parse(quantityControllerForCommende.text);
+    selectedBonDeCommende!.montantTotal =
+        total + selectedBonDeCommende!.montantTotal!;
+    Commende commende = Commende(
+      article_id: selectedArticleForCommende!.id!,
+      bonDeCommende_id: selectedBonDeCommende!.id!,
+      quantite: int.parse(quantityControllerForCommende.text),
+    );
+    await _dbHelper.insertCommende(commende);
+    updateBonDeCommende();
+    fetchCommendes();
+  }
 }

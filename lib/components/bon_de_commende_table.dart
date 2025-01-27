@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
+import 'package:inventaire_cnas/page/edit_bon.dart';
 
 class BonDeCommandeTable extends StatelessWidget {
   final DatabaseController databaseController = Get.find<DatabaseController>();
@@ -23,14 +24,17 @@ class BonDeCommandeTable extends StatelessWidget {
                 DataColumn(label: Text('Actions')),
               ],
               rows: controller.bonDeCommendes
-                  .map((commande) => DataRow(cells: [
-                        DataCell(Text(commande.date.toString())),
-                        DataCell(Text(commande.fournisseur_id.toString())),
-                        DataCell(Text(commande.montantTotal.toString())),
+                  .map((bDCommende) => DataRow(cells: [
+                        DataCell(Text(bDCommende.date.toString())),
+                        DataCell(Text(bDCommende.fournisseur_id.toString())),
+                        DataCell(Text(bDCommende.montantTotal.toString())),
                         DataCell(IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () {
-                            
+                            databaseController.fetchCommendes();
+                            databaseController.selectedBonDeCommende =
+                                bDCommende;
+                            Get.to(() => EditBonCommendePage());
                           },
                         )),
                       ]))

@@ -46,6 +46,7 @@ class AddBonDeCommandePage extends StatelessWidget {
                 onPressed: () {
                   databaseController.addBonDeCommende();
                   databaseController.update();
+                  Get.back();
                 },
                 child: const Text('Ajoute une bon de commende'),
               ),
