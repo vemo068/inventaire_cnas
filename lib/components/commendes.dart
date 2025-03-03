@@ -14,24 +14,22 @@ class Commendes extends StatelessWidget {
     return GetBuilder<DatabaseController>(
       init: databaseController,
       builder: (_) {
-        if (databaseController.commendes
+        List<Commende> this_commendes = databaseController.commendes
             .where((element) =>
                 element.bonDeCommende_id ==
                 databaseController.selectedBonDeCommende!.id)
-            .isEmpty) {
+            .toList();
+
+        if (this_commendes.isEmpty) {
           return const Center(
             child: Text("No Commendes."),
           );
         } else {
           return ListView.builder(
-            itemCount: databaseController.commendes
-                .where((element) =>
-                    element.bonDeCommende_id ==
-                    databaseController.selectedBonDeCommende!.id)
-                .length,
+            itemCount: this_commendes.length,
             itemBuilder: (context, index) {
               return CommendeTile(
-                commende: databaseController.commendes[index],
+                commende: this_commendes[index],
               );
             },
           );
@@ -57,7 +55,7 @@ class CommendeTile extends StatelessWidget {
         ListTile(
           onLongPress: () {
             databaseController.selectedCommende = commende;
-            databaseController.selectedArticleToUpdate = article;
+            // databaseController.selectedArticleToUpdate = article;
             Get.defaultDialog(
               backgroundColor: Colors.green[200],
               title: "Supprimer",

@@ -45,3 +45,35 @@
       montantTotal REAL,
       FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs (id)
     )''';
+
+
+    // SQL to create the Service table
+    final String serviceTable = '''
+      CREATE TABLE services (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL
+      )''';
+
+    // SQL to create the Agent table
+    final String agentTable = '''
+      CREATE TABLE agents (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        service_id INTEGER NOT NULL,
+        FOREIGN KEY (service_id) REFERENCES services(id)
+      )''';
+
+    // SQL to create the Affectation table
+    final String affectationTable = '''
+      CREATE TABLE affectations (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        agent_id INTEGER NOT NULL,
+        article_id INTEGER NOT NULL,
+        dateAffectation TEXT NOT NULL,
+        FOREIGN KEY (agent_id) REFERENCES agents(id),
+        FOREIGN KEY (article_id) REFERENCES articles(id)
+      )''';
+
+
+
+

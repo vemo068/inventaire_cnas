@@ -215,31 +215,39 @@ class DatabaseController extends GetxController {
   void addCommende() async {
     //  selectedArticleToUpdate = allArticles
     // .firstWhere((element) => element.id == selectedArticleForCommende!.id);
-    double total = (selectedArticleForCommende!.priceHT *
-            double.parse(quantityControllerForCommende.text)) *
-        (selectedArticleForCommende!.tva / 100 + 1);
+    if (quantityControllerForCommende.text != "" &&
+        selectedArticleForCommende != null) {
+      double total = (selectedArticleForCommende!.priceHT *
+              double.parse(quantityControllerForCommende.text)) *
+          (selectedArticleForCommende!.tva / 100 + 1);
 
-    Commende commende = Commende(
-      article_id: selectedArticleForCommende!.id!,
-      bonDeCommende_id: selectedBonDeCommende!.id!,
-      quantite: int.parse(quantityControllerForCommende.text),
-    );
-    await _dbHelper.insertCommende(commende);
-    updateBonDeCommende(total);
-    updateArticleAddingQuantity(commende.quantite);
-    fetchCommendes();
+      Commende commende = Commende(
+        article_id: selectedArticleForCommende!.id!,
+        bonDeCommende_id: selectedBonDeCommende!.id!,
+        quantite: int.parse(quantityControllerForCommende.text),
+      );
+      await _dbHelper.insertCommende(commende);
+      updateBonDeCommende(total);
+      //updateArticleAddingQuantity(commende.quantite);
+      fetchCommendes();
+      fetchArticles();
+    } else {
+      Get.snackbar("Error", "Please fill all the fields");
+    }
   }
 
   void removeCommende() async {
-    // selectedArticleToUpdate = allArticles
-    //     .firstWhere((element) => element.id == selectedCommende!.article_id);
-    double total = (selectedArticleForCommende!.priceHT *
-            double.parse(quantityControllerForCommende.text)) *
-        (selectedArticleForCommende!.tva / 100 + 1);
+    selectedArticleToUpdate = allArticles
+        .firstWhere((element) => element.id == selectedCommende!.article_id);
+    double total = (selectedArticleToUpdate!.priceHT *
+        selectedCommende!.quantite *
+        (selectedArticleToUpdate!.tva / 100 + 1));
     await _dbHelper.deleteCommende(selectedCommende!.id!);
     updateBonDeCommende(-total);
-    updateArticleSubstractingQuantity(selectedCommende!.quantite);
+    // updateArticleSubstractingQuantity(selectedCommende!.quantite);
     fetchCommendes();
+    fetchArticles();
+    update();
   }
 
   //update Article

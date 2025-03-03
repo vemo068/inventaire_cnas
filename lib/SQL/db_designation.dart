@@ -166,10 +166,20 @@ class DatabaseHelper {
   }
 
 
-  // insert commende
+  // insert commende and update article quantity
   Future<int> insertCommende(Commende commende) async {
     final Database db = await init();
-    return db.insert("commendes", commende.toJson());
+    await db.transaction((txn) async {
+      // Insert the commende
+      await txn.insert("commendes", commende.toJson());
+
+      // Update the quantity of the article
+      await txn.rawUpdate(
+        "UPDATE articles SET quantity = quantity + ? WHERE id = ?",
+        [commende.quantite, commende.article_id],
+      );
+    });
+    return 1;
   }
 
   // get commende
@@ -193,6 +203,26 @@ class DatabaseHelper {
   // delete commende
   Future<int> deleteCommende(int id) async {
     final Database db = await init();
-    return db.delete("commendes", where: "id = ?", whereArgs: [id]);
+    // Get the commende to retrieve the article_id and quantity
+    final List<Map<String, Object?>> commendeResult = await db.query(
+      "commendes",
+      where: "id = ?",
+      whereArgs: [id],
+    );
+
+    if (commendeResult.isNotEmpty) {
+      final Commende commende = Commende.fromJson(commendeResult.first);
+
+      // Delete the commende
+      await db.delete("commendes", where: "id = ?", whereArgs: [id]);
+
+      // Update the quantity of the article
+      return db.rawUpdate(
+        "UPDATE articles SET quantity = quantity - ? WHERE id = ?",
+        [commende.quantite, commende.article_id],
+      );
+    }
+
+    return 0;
   }
 }
