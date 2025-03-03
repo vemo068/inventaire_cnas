@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:inventaire_cnas/components/textfield_pc.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 
 class AddArticlePage extends StatefulWidget {
+  const AddArticlePage({super.key});
+
   @override
   State<AddArticlePage> createState() => _AddArticlePageState();
 }
@@ -16,7 +19,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Article'),
+        title: const Text('Add Article'),
       ),
       body: Center(
         child: Padding(
@@ -29,11 +32,13 @@ class _AddArticlePageState extends State<AddArticlePage> {
               GetBuilder<DatabaseController>(
                 builder: (_) {
                   if (databaseController.designations.isEmpty) {
-                    return Text('No designations available');
+                    return const Text('No designations available');
                   } else {
                     return SizedBox(
                         height: 50,
                         child: DropdownButton<Designation>(
+                          
+                          hint: const Text('Select Category'),
                           value: selectedLocalDesignation,
                           items: databaseController.designations
                               .map((designation) {
@@ -54,7 +59,7 @@ class _AddArticlePageState extends State<AddArticlePage> {
                   }
                 },
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TxtFldPC(
                 hint: "article nom",
                 controller: databaseController.articleNameController,
@@ -63,24 +68,24 @@ class _AddArticlePageState extends State<AddArticlePage> {
                 hint: "description",
                 controller: databaseController.descriptionController,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TxtFldPC(
                   hint: "prix HT",
                   controller: databaseController.priceHTController),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TxtFldPC(
                   hint: "quantite",
                   controller: databaseController.quantityController),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TxtFldPC(
                   hint: "tva", controller: databaseController.tvaController),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
                   databaseController.addArticle();
                   Get.back();
                 },
-                child: Text('Add Article'),
+                child: const Text('Add Article'),
               ),
             ],
           ),

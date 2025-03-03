@@ -26,7 +26,6 @@ class ArticlesTable extends StatelessWidget {
                 DataColumn(label: Text('Montant HT')),
                 DataColumn(label: Text('TVA')),
                 DataColumn(label: Text('Montant TTC')),
-                DataColumn(label: Text('Actions')),
               ],
               rows: controller.articles
                   .map((article) => DataRow(cells: [
@@ -47,10 +46,10 @@ class ArticlesTable extends StatelessWidget {
                             ).toString(),
                           ),
                         ),
-                        DataCell(IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {},
-                        )),
+                        // DataCell(IconButton(
+                        //   icon: const Icon(Icons.delete),
+                        //   onPressed: () {},
+                        // )),
                       ]))
                   .toList(),
             ),
@@ -60,4 +59,3 @@ class ArticlesTable extends StatelessWidget {
     );
   }
 }
-

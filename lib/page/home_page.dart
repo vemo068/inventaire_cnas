@@ -39,24 +39,9 @@ class HomePage extends StatelessWidget {
             ),
             _buildNavigationButton(
               context,
-              icon: Icons.add,
-              label: "Add Article",
-              onPressed: () async {
-                controller.update();
-                Get.to(() => AddArticlePage());
-              },
-            ),
-            _buildNavigationButton(
-              context,
               icon: Icons.design_services,
               label: "Add Designation",
               onPressed: () => Get.to(() => AddDesignationPage()),
-            ),
-            _buildNavigationButton(
-              context,
-              icon: Icons.add_business,
-              label: "Add Fournisseur",
-              onPressed: () => Get.to(() => const AddFournisseurPage()),
             ),
             _buildNavigationButton(
               context,
@@ -64,14 +49,6 @@ class HomePage extends StatelessWidget {
               label: "Liste des Fournisseurs",
               onPressed: () async {
                 Get.to(() => ListFournisseursPage());
-              },
-            ),
-            _buildNavigationButton(
-              context,
-              icon: Icons.add_chart_rounded,
-              label: "Ajoute bon de commende",
-              onPressed: () async {
-                Get.to(() => const AddBonDeCommandePage());
               },
             ),
             _buildNavigationButton(

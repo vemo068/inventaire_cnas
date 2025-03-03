@@ -8,7 +8,7 @@ import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 
 class ArticlesPage extends StatefulWidget {
-  ArticlesPage({super.key});
+  const ArticlesPage({super.key});
 
   @override
   State<ArticlesPage> createState() => _ArticlesPageState();
@@ -20,6 +20,13 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Get.to(() => const AddArticlePage());
+        },
+        label: const Text("Ajouter Article"),
+        icon: const Icon(Icons.local_grocery_store),
+      ),
       appBar: AppBar(
         title: const Text("Articles Page"),
       ),
@@ -27,58 +34,55 @@ class _ArticlesPageState extends State<ArticlesPage> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Expanded(
-                child: _buildNavigationButton(
-                  context,
-                  icon: Icons.add,
-                  label: "Add Article",
-                  onPressed: () => Get.to(() => AddArticlePage()),
-                ),
+              _buildNavigationButton(
+                context,
+                icon: Icons.design_services,
+                label: "Add Category",
+                onPressed: () => Get.to(() => AddDesignationPage()),
               ),
-              Expanded(
-                child: _buildNavigationButton(
-                  context,
-                  icon: Icons.design_services,
-                  label: "Add Designation",
-                  onPressed: () => Get.to(() => AddDesignationPage()),
-                ),
+              const SizedBox(
+                width: 100,
               ),
-              Expanded(
-                child: SizedBox(
-                  child: TextField(
-                    onChanged: (value) {
-                      databaseController.filterArticles();
-                    },
-                    controller: databaseController.articleSearchController,
-                    decoration: const InputDecoration(
-                      labelText: "Recherche",
-                    ),
+              SizedBox(
+                width: 200,
+                child: TextField(
+                  onChanged: (value) {
+                    databaseController.filterArticles();
+                  },
+                  controller: databaseController.articleSearchController,
+                  decoration: const InputDecoration(
+                    labelText: "Recherche",
                   ),
                 ),
               ),
-              Expanded(
+              const SizedBox(
+                width: 100,
+              ),
+              SizedBox(
+                  width: 200,
                   child: DropdownButton<Designation>(
-                value: selectedLocalDesignation,
-                items: databaseController.designations.map((designation) {
-                      return DropdownMenuItem<Designation>(
-                        value: designation,
-                        child: Text(designation.name),
-                      );
-                    }).toList() +
-                    [
-                      DropdownMenuItem<Designation>(
-                          value: null, child: Text("All"))
-                    ],
-                onChanged: (Designation? newValue) {
-                  setState(() {
-                    selectedLocalDesignation = newValue;
-                    databaseController.selectedDesignation = newValue;
-                    databaseController.filterArticlesByDesignation();
-                    databaseController.update();
-                  });
-                },
-              )),
+                    value: selectedLocalDesignation,
+                    items: databaseController.designations.map((designation) {
+                          return DropdownMenuItem<Designation>(
+                            value: designation,
+                            child: Text(designation.name),
+                          );
+                        }).toList() +
+                        [
+                          const DropdownMenuItem<Designation>(
+                              value: null, child: Text("All"))
+                        ],
+                    onChanged: (Designation? newValue) {
+                      setState(() {
+                        selectedLocalDesignation = newValue;
+                        databaseController.selectedDesignation = newValue;
+                        databaseController.filterArticlesByDesignation();
+                        databaseController.update();
+                      });
+                    },
+                  )),
             ],
           ),
           const SizedBox(height: 16.0),

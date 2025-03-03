@@ -135,49 +135,81 @@ class DatabaseController extends GetxController {
 
   // Add a new designation
   Future<void> addDesignation() async {
-    Designation designation = Designation(name: designationNameController.text);
-    await _dbHelper.insertDesignation(designation);
-    fetchDesignations();
-    fetchAllDesignations();
-    update();
+    if (designationNameController.text == "") {
+      Get.snackbar("Error", "Please fill all the fields");
+    } else {
+      Designation designation =
+          Designation(name: designationNameController.text);
+      await _dbHelper.insertDesignation(designation);
+      fetchDesignations();
+      fetchAllDesignations();
+      update();
+      designationNameController.clear();
+    }
   }
 
 // Add a new fournisseur
   Future<void> addFournisseur() async {
-    Fournisseur fournisseur = Fournisseur(name: fournisseurController.text);
-    await _dbHelper.insertFournisseur(fournisseur);
-    fetchFournisseurs();
-    update();
+    if (fournisseurController.text != "") {
+      Fournisseur fournisseur = Fournisseur(name: fournisseurController.text);
+      await _dbHelper.insertFournisseur(fournisseur);
+      fetchFournisseurs();
+      update();
+      fournisseurController.clear();
+    } else {
+      Get.snackbar("Error", "Please fill all the fields");
+    }
   }
 
   // Add a new article
   Future<void> addArticle() async {
-    Article article = Article(
-        articleName: articleNameController.text,
-        designation_id: selectedDesignation!.id!,
-        description: descriptionController.text,
-        quantity: int.parse(quantityController.text),
-        priceHT: double.parse(priceHTController.text),
-        montantHT: int.parse(quantityController.text) *
-            double.parse(priceHTController.text),
-        tva: double.parse(tvaController.text),
-        montantTTC: int.parse(quantityController.text) *
-            double.parse(priceHTController.text) *
-            double.parse(tvaController.text));
-    await _dbHelper.insertArticle(article);
-    fetchArticles();
+    if (articleNameController.text == "" ||
+        descriptionController.text == "" ||
+        quantityController.text == "" ||
+        priceHTController.text == "" ||
+        tvaController.text == "" ||
+        selectedDesignation == null) {
+      Get.snackbar("Error", "Please fill all the fields");
+    } else {
+      Article article = Article(
+          articleName: articleNameController.text,
+          designation_id: selectedDesignation!.id!,
+          description: descriptionController.text,
+          quantity: int.parse(quantityController.text),
+          priceHT: double.parse(priceHTController.text),
+          montantHT: int.parse(quantityController.text) *
+              double.parse(priceHTController.text),
+          tva: double.parse(tvaController.text),
+          montantTTC: int.parse(quantityController.text) *
+              double.parse(priceHTController.text) *
+              double.parse(tvaController.text));
+      await _dbHelper.insertArticle(article);
+      fetchArticles();
+      articleNameController.clear();
+      descriptionController.clear();
+      quantityController.clear();
+      priceHTController.clear();
+      tvaController.clear();
+      update();
+    }
   }
 
   // Add a new bon de commendes
   void addBonDeCommende() async {
-    BonDeCommende bonDeCommende = BonDeCommende(
-      date: DateTime.now().toString(),
-      fournisseur_id: selectedFournisseur!.id!,
-      dateBonDeCommende: DateTime.now(),
-      montantTotal: 0.0,
-    );
-    await _dbHelper.insertBonDeCommende(bonDeCommende);
-    fetchBonDeCommendes();
+    if (selectedFournisseur == null) {
+      Get.snackbar("Error", "Please fill all the fields");
+    } else {
+      BonDeCommende bonDeCommende = BonDeCommende(
+        date: DateTime.now().toString(),
+        fournisseur_id: selectedFournisseur!.id!,
+        dateBonDeCommende: DateTime.now(),
+        montantTotal: 0.0,
+      );
+      await _dbHelper.insertBonDeCommende(bonDeCommende);
+      fetchBonDeCommendes();
+      selectedFournisseur = null;
+      update();
+    }
   }
 
   // update BonDeCommende
@@ -231,6 +263,10 @@ class DatabaseController extends GetxController {
       //updateArticleAddingQuantity(commende.quantite);
       fetchCommendes();
       fetchArticles();
+      quantityControllerForCommende.clear();
+      selectedArticleForCommende = null;
+      selectedDesignation = null;
+      update();
     } else {
       Get.snackbar("Error", "Please fill all the fields");
     }
@@ -250,39 +286,4 @@ class DatabaseController extends GetxController {
     update();
   }
 
-  //update Article
-  void updateArticleAddingQuantity(int added_quantity) async {
-    Article article = Article(
-      id: selectedArticleToUpdate!.id,
-      articleName: selectedArticleToUpdate!.articleName,
-      designation_id: selectedArticleToUpdate!.designation_id,
-      description: selectedArticleToUpdate!.description,
-      quantity: selectedArticleToUpdate!.quantity + added_quantity,
-      priceHT: selectedArticleToUpdate!.priceHT,
-      montantHT: selectedArticleToUpdate!.montantHT,
-      tva: selectedArticleToUpdate!.tva,
-      montantTTC: selectedArticleToUpdate!.montantTTC,
-    );
-    await _dbHelper.updateArticle(selectedArticleToUpdate!.id!, article);
-    fetchArticles();
-    fetchAllArticles();
-  }
-
-  void updateArticleSubstractingQuantity(int substracted_quantity) async {
-    int quantityy = selectedArticleToUpdate!.quantity - substracted_quantity;
-    Article article = Article(
-      id: selectedArticleForCommende!.id,
-      articleName: selectedArticleToUpdate!.articleName,
-      designation_id: selectedArticleToUpdate!.designation_id,
-      description: selectedArticleToUpdate!.description,
-      quantity: quantityy,
-      priceHT: selectedArticleToUpdate!.priceHT,
-      montantHT: selectedArticleToUpdate!.montantHT,
-      tva: selectedArticleToUpdate!.tva,
-      montantTTC: selectedArticleToUpdate!.montantTTC,
-    );
-    await _dbHelper.updateArticle(selectedArticleToUpdate!.id!, article);
-    fetchArticles();
-    fetchAllArticles();
-  }
 }

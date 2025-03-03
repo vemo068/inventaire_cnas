@@ -116,6 +116,7 @@ class _BonDeCommendeInfoBoxState extends State<BonDeCommendeInfoBox> {
                     return SizedBox(
                         height: 50,
                         child: DropdownButton<Designation>(
+                          hint: const Text("Category"),
                           value: selectedLocalDesignation,
                           items: databaseController.allDesignations
                               .map((designation) {
@@ -148,6 +149,7 @@ class _BonDeCommendeInfoBoxState extends State<BonDeCommendeInfoBox> {
                     return SizedBox(
                         height: 50,
                         child: DropdownButton<Article>(
+                          hint: const Text("Article"),
                           value: selectedLocalArticle,
                           items: selectedLocalDesignation == null
                               ? []
