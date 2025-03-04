@@ -1,16 +1,19 @@
 import 'package:inventaire_cnas/SQL/tables.dart';
+import 'package:inventaire_cnas/models/affectation.dart';
+import 'package:inventaire_cnas/models/agent.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
+import 'package:inventaire_cnas/models/service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  final String databaseName = "invtcnasbase.db";
+  final String databaseName = "invtcnasbase05032025.db";
 
   // Database connection initialization
   Future<Database> init() async {
@@ -26,6 +29,9 @@ class DatabaseHelper {
         await db.execute(fournisseurTable);
         await db.execute(bonDeCommendeTable);
         await db.execute(commendeTable);
+        await db.execute(serviceTable);
+        await db.execute(agentTable);
+        await db.execute(affectationTable);
       },
     );
   }
@@ -138,8 +144,7 @@ class DatabaseHelper {
   }
 
   // update bondecommende
-  Future<int> updateBonDeCommende(
-      BonDeCommende updatedBonDeCommende) async {
+  Future<int> updateBonDeCommende(BonDeCommende updatedBonDeCommende) async {
     final Database db = await init();
     return db.update(
       "bonDeCommendes",
@@ -164,7 +169,6 @@ class DatabaseHelper {
     );
     return result.map((e) => BonDeCommende.fromJson(e)).toList();
   }
-
 
   // insert commende and update article quantity
   Future<int> insertCommende(Commende commende) async {
@@ -224,5 +228,72 @@ class DatabaseHelper {
     }
 
     return 0;
+  }
+
+  // CRUD Operations for Services
+  Future<int> insertService(ServiceC service) async {
+    final db = await init();
+    return await db.insert('services', service.toJson());
+  }
+
+  Future<List<ServiceC>> getServices() async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('services');
+    return List.generate(maps.length, (i) => ServiceC.fromJson(maps[i]));
+  }
+
+  Future<int> updateService(ServiceC service) async {
+    final db = await init();
+    return await db.update('services', service.toJson(),
+        where: 'id = ?', whereArgs: [service.id]);
+  }
+
+  Future<int> deleteService(int id) async {
+    final db = await init();
+    return await db.delete('services', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // CRUD Operations for Agents
+  Future<int> insertAgent(AgentC agent) async {
+    final db = await init();
+    return await db.insert('agents', agent.toJson());
+  }
+
+  Future<List<AgentC>> getAgents() async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('agents');
+    return List.generate(maps.length, (i) => AgentC.fromJson(maps[i]));
+  }
+
+  Future<int> updateAgent(AgentC agent) async {
+    final db = await init();
+    return await db.update('agents', agent.toJson(),
+        where: 'id = ?', whereArgs: [agent.id]);
+  }
+
+  Future<int> deleteAgent(int id) async {
+    final db = await init();
+    return await db.delete('agents', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // CRUD Operations for Affectations
+  Future<int> insertAffectation(Affectation affectation) async {
+    final db = await init();
+    int result = await db.insert('affectations', affectation.toJson());
+    await db.rawUpdate(
+        '''UPDATE articles SET quantity = quantity - 1 WHERE id = ?''',
+        [affectation.article_id]);
+    return result;
+  }
+
+  Future<List<Affectation>> getAffectations() async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('affectations');
+    return List.generate(maps.length, (i) => Affectation.fromJson(maps[i]));
+  }
+
+  Future<int> deleteAffectation(int id) async {
+    final db = await init();
+    return await db.delete('affectations', where: 'id = ?', whereArgs: [id]);
   }
 }

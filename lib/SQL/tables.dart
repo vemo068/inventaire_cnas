@@ -59,6 +59,7 @@
       CREATE TABLE agents (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
+        post TEXT NOT NULL,
         service_id INTEGER NOT NULL,
         FOREIGN KEY (service_id) REFERENCES services(id)
       )''';

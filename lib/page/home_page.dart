@@ -7,6 +7,7 @@ import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_bon_de_commende.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
 import 'package:inventaire_cnas/page/add_fournisseur.dart';
+import 'package:inventaire_cnas/page/affectation/nav_affectation.dart';
 import 'package:inventaire_cnas/page/articles_page.dart';
 import 'package:inventaire_cnas/page/bon_commendes.dart';
 import 'package:inventaire_cnas/page/list_fournisseurs.dart';
@@ -34,7 +35,7 @@ class HomePage extends StatelessWidget {
               icon: Icons.article,
               label: "Articles",
               onPressed: () {
-                Get.to(() => ArticlesPage());
+                Get.to(() => const ArticlesPage());
               },
             ),
             _buildNavigationButton(
@@ -57,6 +58,14 @@ class HomePage extends StatelessWidget {
               label: "List des bon de commende",
               onPressed: () async {
                 Get.to(() => const BonCommendesPage());
+              },
+            ),
+            _buildNavigationButton(
+              context,
+              icon: Icons.add_box,
+              label: "Affectation",
+              onPressed: () async {
+                Get.to(() => AffectationsNavigationPage());
               },
             ),
           ],
