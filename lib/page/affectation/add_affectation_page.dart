@@ -57,7 +57,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                   decoration: const InputDecoration(
                       labelText: 'Select Article',
                       border: OutlineInputBorder()),
-                  items: dbController.allArticles.map((article) {
+                  items: dbController.articles.map((article) {
                     return DropdownMenuItem<int>(
                       value: article.id,
                       child: Text(

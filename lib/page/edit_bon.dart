@@ -4,210 +4,143 @@ import 'package:inventaire_cnas/components/commendes.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/designation.dart';
+import 'package:inventaire_cnas/pdf/bon_commende.dart';
 
 class EditBonCommendePage extends StatelessWidget {
   EditBonCommendePage({super.key});
   final DatabaseController databaseController = Get.find<DatabaseController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // backgroundColor: kcbackground,
       appBar: AppBar(
-        title: const Text("Bon de Commende Page"),
+        title: const Text("Bon de Commande"),
         foregroundColor: Colors.white,
         backgroundColor: Colors.blue,
         elevation: 0,
-      ),
-      body: Column(
-        children: [
-          const BonDeCommendeInfoBox(),
-          const SizedBox(height: 20),
-          Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            child:
-                // SellOrders(),
-                Commendes(),
-          )),
-          // AddCommendeButton()
-        ],
-      ),
-    );
-  }
-}
-
-class AddCommendeButton extends StatelessWidget {
-  AddCommendeButton({super.key});
-  final DatabaseController databaseController = Get.find<DatabaseController>();
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.blue,
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          ElevatedButton(
-            onPressed: () {
-              //  Get.to(() => AddCommendePage());
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.picture_as_pdf),
+            onPressed: () async {
+              final file = await BonDeCommandePDF.generate(databaseController);
+              Get.snackbar("Succès", "PDF généré: ${file.path}",
+                  snackPosition: SnackPosition.BOTTOM);
             },
-            child: const Text("Add Commende"),
+          ),
+        ],
+      ),
+      body: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: _buildCommandeInfoBox(),
+          ),
+          Expanded(
+            flex: 3,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Commendes(),
+            ),
           ),
         ],
       ),
     );
   }
-}
 
-class BonDeCommendeInfoBox extends StatefulWidget {
-  const BonDeCommendeInfoBox({super.key});
-
-  @override
-  State<BonDeCommendeInfoBox> createState() => _BonDeCommendeInfoBoxState();
-}
-
-class _BonDeCommendeInfoBoxState extends State<BonDeCommendeInfoBox> {
-  final DatabaseController databaseController = Get.find<DatabaseController>();
-  Designation? selectedLocalDesignation;
-  Article? selectedLocalArticle;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.grey.shade300,
-      width: double.infinity,
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  (databaseController.selectedBonDeCommende!.fournisseur_id)
-                      .toString(),
-                  // style: mediHeading3Style.copyWith(color: kcwhite
-                ),
-              ),
-              Expanded(
-                  child: Text(
-                databaseController.selectedBonDeCommende!.date.toString(),
-                //   style: mediHeading3Style.copyWith(color: kcwhite
-              )),
-              GetBuilder(
-                  init: databaseController,
-                  builder: (_) {
-                    return Text(
-                      "TOTAL : "
-                      "${(databaseController.selectedBonDeCommende!.montantTotal)} DA",
-                      //   style: mediHeading2Style.copyWith(color: kcaccent)
-                    );
-                  }),
-            ],
-          ),
-          const SizedBox(height: 20),
-          const Text("Ajouter une Commende"),
-          Row(
-            children: [
-              GetBuilder<DatabaseController>(
-                builder: (_) {
-                  if (databaseController.designations.isEmpty) {
-                    return const Text('No designations available');
-                  } else {
-                    return SizedBox(
-                        height: 50,
-                        child: DropdownButton<Designation>(
-                          hint: const Text("Category"),
-                          value: selectedLocalDesignation,
-                          items: databaseController.allDesignations
-                              .map((designation) {
-                            return DropdownMenuItem<Designation>(
-                              value: designation,
-                              child: Text(designation.name),
-                            );
-                          }).toList(),
-                          onChanged: (Designation? newValue) {
-                            setState(() {
-                              selectedLocalDesignation = newValue;
-                              databaseController
-                                  .selectedDesignationForCommende = newValue;
-
-                              databaseController.update();
-                            });
-                          },
-                        ));
-                  }
-                },
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              GetBuilder<DatabaseController>(
-                builder: (_) {
-                  if (databaseController.articles.isEmpty) {
-                    return const Text('No articles available');
-                  } else {
-                    return SizedBox(
-                        height: 50,
-                        child: DropdownButton<Article>(
-                          hint: const Text("Article"),
-                          value: selectedLocalArticle,
-                          items: selectedLocalDesignation == null
-                              ? []
-                              : databaseController.allArticles
-                                  .where((article) =>
-                                      article.designation_id ==
-                                      selectedLocalDesignation!.id)
-                                  .map((article) {
-                                  return DropdownMenuItem<Article>(
-                                    value: article,
-                                    child: Text(article.articleName),
-                                  );
-                                }).toList(),
-                          onChanged: (Article? newValue) {
-                            setState(() {
-                              selectedLocalArticle = newValue;
-                              databaseController.selectedArticleForCommende =
-                                  newValue;
-
-                              databaseController.update();
-                            });
-                          },
-                        ));
-                  }
-                },
-              ),
-              const SizedBox(
-                width: 16,
-              ),
-              GetBuilder<DatabaseController>(
-                builder: (_) {
-                  return SizedBox(
-                    width: 100,
-                    child: TextField(
-                      controller:
-                          databaseController.quantityControllerForCommende,
-                      decoration: const InputDecoration(
-                        hintText: "Quantity",
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              // SizedBox(height: 16.0),
-
-              //button
-              ElevatedButton(
-                onPressed: () {
-                  databaseController.addCommende();
-                  // Get.back();
-                },
-                child: const Text('Add Commende'),
-              ),
-            ],
-          )
-        ],
+  Widget _buildCommandeInfoBox() {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.all(16.0),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+                "Fournisseur: ${databaseController.fournisseurs.firstWhere((f) => f.id == databaseController.selectedBonDeCommende?.fournisseur_id).name ?? 'N/A'}",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+                "Date: ${databaseController.selectedBonDeCommende?.date ?? 'N/A'}"),
+            Text(
+                "Total: ${databaseController.selectedBonDeCommende?.montantTotal ?? 0} DA",
+                style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.red)),
+            const SizedBox(height: 20),
+            const Text("Ajouter une Commande",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            _buildCategoryDropdown(),
+            const SizedBox(height: 10),
+            _buildArticleDropdown(),
+            const SizedBox(height: 10),
+            _buildQuantityInput(),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () => databaseController.addCommende(),
+              child: const Text("Ajouter"),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildCategoryDropdown() {
+    return GetBuilder<DatabaseController>(
+      builder: (controller) {
+        return DropdownButtonFormField<Designation>(
+          decoration: const InputDecoration(
+              labelText: "Catégorie", border: OutlineInputBorder()),
+          items: controller.designations.map((designation) {
+            return DropdownMenuItem(
+                value: designation, child: Text(designation.name));
+          }).toList(),
+          onChanged: (value) {
+            controller.selectedDesignationForCommende = value;
+            controller.update();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildArticleDropdown() {
+    return GetBuilder<DatabaseController>(
+      builder: (controller) {
+        return DropdownButtonFormField<Article>(
+          decoration: const InputDecoration(
+              labelText: "Article", border: OutlineInputBorder()),
+          items: controller.allArticles
+              .where((article) =>
+                  article.designation_id ==
+                  controller.selectedDesignationForCommende?.id)
+              .map((article) {
+            return DropdownMenuItem(
+                value: article, child: Text(article.articleName));
+          }).toList(),
+          onChanged: (value) {
+            controller.selectedArticleForCommende = value;
+            controller.update();
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildQuantityInput() {
+    return GetBuilder<DatabaseController>(
+      builder: (controller) {
+        return TextField(
+          controller: controller.quantityControllerForCommende,
+          decoration: const InputDecoration(
+              labelText: "Quantité", border: OutlineInputBorder()),
+          keyboardType: TextInputType.number,
+        );
+      },
     );
   }
 }

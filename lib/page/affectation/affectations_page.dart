@@ -166,7 +166,7 @@ class _AffectationsPageState extends State<AffectationsPage> {
                         (agent) => agent.id == affectation.agent_id,
                       )
                       .name;
-                  final articleName = dbController.allArticles
+                  final articleName = dbController.articles
                       .firstWhere(
                         (article) => article.id == affectation.article_id,
                       )

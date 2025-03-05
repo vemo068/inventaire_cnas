@@ -21,6 +21,7 @@ class AffectationController extends GetxController {
   // Affectations Management
   Future<void> fetchAffectations() async {
     affectations.value = await _dbHelper.getAffectations();
+    update();
   }
 
   Future<void> addAffectation(Affectation affectation) async {
@@ -36,6 +37,7 @@ class AffectationController extends GetxController {
   // Agents Management
   Future<void> fetchAgents() async {
     agents.value = await _dbHelper.getAgents();
+    update();
   }
 
   Future<void> addAgent(AgentC agent) async {
@@ -56,6 +58,7 @@ class AffectationController extends GetxController {
   // Services Management
   Future<void> fetchServices() async {
     services.value = await _dbHelper.getServices();
+    update();
   }
 
   Future<void> addService(ServiceC service) async {
