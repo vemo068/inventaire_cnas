@@ -1,19 +1,19 @@
 import 'package:inventaire_cnas/SQL/tables.dart';
 import 'package:inventaire_cnas/models/affectation.dart';
+import 'package:inventaire_cnas/models/affectation_unit.dart';
 import 'package:inventaire_cnas/models/agent.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
-import 'package:inventaire_cnas/models/service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  final String databaseName = "invtcnasbase05032025.db";
+  final String databaseName = "invtcnasbase10032025.db";
 
   // Database connection initialization
   Future<Database> init() async {
@@ -29,9 +29,9 @@ class DatabaseHelper {
         await db.execute(fournisseurTable);
         await db.execute(bonDeCommendeTable);
         await db.execute(commendeTable);
-        await db.execute(serviceTable);
-        await db.execute(agentTable);
+        await db.execute(servicesTable);
         await db.execute(affectationTable);
+        await db.execute(affectationUnitTable);
       },
     );
   }
@@ -230,7 +230,7 @@ class DatabaseHelper {
     return 0;
   }
 
-  // CRUD Operations for Services
+  // CRUD Operations for Agents
   Future<int> insertService(ServiceC service) async {
     final db = await init();
     return await db.insert('services', service.toJson());
@@ -242,10 +242,10 @@ class DatabaseHelper {
     return List.generate(maps.length, (i) => ServiceC.fromJson(maps[i]));
   }
 
-  Future<int> updateService(ServiceC service) async {
+  Future<int> updateService(ServiceC agent) async {
     final db = await init();
-    return await db.update('services', service.toJson(),
-        where: 'id = ?', whereArgs: [service.id]);
+    return await db.update('services', agent.toJson(),
+        where: 'id = ?', whereArgs: [agent.id]);
   }
 
   Future<int> deleteService(int id) async {
@@ -253,36 +253,10 @@ class DatabaseHelper {
     return await db.delete('services', where: 'id = ?', whereArgs: [id]);
   }
 
-  // CRUD Operations for Agents
-  Future<int> insertAgent(AgentC agent) async {
-    final db = await init();
-    return await db.insert('agents', agent.toJson());
-  }
-
-  Future<List<AgentC>> getAgents() async {
-    final db = await init();
-    final List<Map<String, dynamic>> maps = await db.query('agents');
-    return List.generate(maps.length, (i) => AgentC.fromJson(maps[i]));
-  }
-
-  Future<int> updateAgent(AgentC agent) async {
-    final db = await init();
-    return await db.update('agents', agent.toJson(),
-        where: 'id = ?', whereArgs: [agent.id]);
-  }
-
-  Future<int> deleteAgent(int id) async {
-    final db = await init();
-    return await db.delete('agents', where: 'id = ?', whereArgs: [id]);
-  }
-
   // CRUD Operations for Affectations
   Future<int> insertAffectation(Affectation affectation) async {
     final db = await init();
     int result = await db.insert('affectations', affectation.toJson());
-    await db.rawUpdate(
-        '''UPDATE articles SET quantity = quantity - 1 WHERE id = ?''',
-        [affectation.article_id]);
     return result;
   }
 
@@ -295,5 +269,62 @@ class DatabaseHelper {
   Future<int> deleteAffectation(int id) async {
     final db = await init();
     return await db.delete('affectations', where: 'id = ?', whereArgs: [id]);
+  }
+
+  // CRUD Operations for AffectationUnits
+
+  Future<int> insertAffectationUnit(AffectationUnit affectationUnit) async {
+    final db = await init();
+    //update the quantity of the article
+    await db.rawUpdate(
+      "UPDATE articles SET quantity = quantity - ? WHERE id = ?",
+      [affectationUnit.quantity, affectationUnit.articleId],
+    );
+    return await db.insert('affectationUnits', affectationUnit.toJson());
+  }
+
+  Future<List<AffectationUnit>> getAffectationUnits() async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('affectationUnits');
+    return List.generate(maps.length, (i) => AffectationUnit.fromJson(maps[i]));
+  }
+
+  Future<int> deleteAffectationUnit(int id) async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps =
+        await db.query('affectationUnits', where: 'id = ?', whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      final AffectationUnit affectationUnit =
+          AffectationUnit.fromJson(maps.first);
+      //update the quantity of the article
+      await db.rawUpdate(
+        "UPDATE articles SET quantity = quantity + ? WHERE id = ?",
+        [affectationUnit.quantity, affectationUnit.articleId],
+      );
+    }
+    return await db
+        .delete('affectationUnits', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<int> updateAffectationUnit(AffectationUnit affectationUnit) async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('affectationUnits',
+        where: 'id = ?', whereArgs: [affectationUnit.id]);
+    if (maps.isNotEmpty) {
+      final AffectationUnit oldAffectationUnit =
+          AffectationUnit.fromJson(maps.first);
+      //update the quantity of the article
+      await db.rawUpdate(
+        "UPDATE articles SET quantity = quantity + ? WHERE id = ?",
+        [oldAffectationUnit.quantity, oldAffectationUnit.articleId],
+      );
+    }
+    //update the quantity of the article
+    await db.rawUpdate(
+      "UPDATE articles SET quantity = quantity - ? WHERE id = ?",
+      [affectationUnit.quantity, affectationUnit.articleId],
+    );
+    return await db.update('affectationUnits', affectationUnit.toJson(),
+        where: 'id = ?', whereArgs: [affectationUnit.id]);
   }
 }

@@ -30,6 +30,7 @@ class DatabaseController extends GetxController {
   BonDeCommende? selectedBonDeCommende;
 
   TextEditingController designationNameController = TextEditingController();
+  TextEditingController designationCompteController = TextEditingController();
   //add prix and tva and ,articlenom controllers
   TextEditingController articleNameController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
@@ -135,11 +136,12 @@ class DatabaseController extends GetxController {
 
   // Add a new designation
   Future<void> addDesignation() async {
-    if (designationNameController.text == "") {
+    if (designationNameController.text == "" ||
+        designationCompteController.text == "") {
       Get.snackbar("Error", "Please fill all the fields");
     } else {
       Designation designation =
-          Designation(name: designationNameController.text);
+          Designation(name: designationNameController.text, compte: designationCompteController.text);
       await _dbHelper.insertDesignation(designation);
       fetchDesignations();
       fetchAllDesignations();

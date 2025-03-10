@@ -4,7 +4,7 @@ import 'package:inventaire_cnas/controllers/affectation_controller.dart';
 import 'package:inventaire_cnas/page/affectation/add_service_page.dart';
 
 
-class ServicesPage extends StatelessWidget {
+class AgentsPage extends StatelessWidget {
   final AffectationController controller = Get.find<AffectationController>();
 
   @override
@@ -14,19 +14,20 @@ class ServicesPage extends StatelessWidget {
       body: Obx(() => ListView.builder(
             itemCount: controller.services.length,
             itemBuilder: (context, index) {
-              final service = controller.services[index];
+              final agent = controller.services[index];
               return ListTile(
-                title: Text(service.name),
+                title: Text(agent.name),
+               
                 trailing: IconButton(
                   icon: Icon(Icons.delete, color: Colors.red),
-                  onPressed: () => controller.deleteService(service.id!),
+                  onPressed: () => controller.deleteAgent(agent.id!),
                 ),
               );
             },
           )),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
-        onPressed: () => Get.to(() => AddServicePage()),
+        onPressed: () => Get.to(() => AddAgentPage()),
       ),
     );
   }

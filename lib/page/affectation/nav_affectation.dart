@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/page/affectation/stats_page.dart';
-import 'agents_page.dart';
 import 'services_page.dart';
 import 'affectations_page.dart';
 
@@ -34,8 +33,6 @@ class AffectationsNavigationPage extends StatelessWidget {
           const SizedBox(height: 20),
           _buildSidebarButton(context, Icons.people, "Agents",
               () => Get.to(() => AgentsPage())),
-          _buildSidebarButton(context, Icons.business, "Services",
-              () => Get.to(() => ServicesPage())),
           _buildSidebarButton(context, Icons.assignment, "Affectations",
               () => Get.to(() => const AffectationsPage())),
           _buildSidebarButton(context, Icons.bar_chart, "Statistiques",

@@ -39,11 +39,11 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                 const SizedBox(height: 20),
                 DropdownButtonFormField<int>(
                   decoration: const InputDecoration(
-                      labelText: 'Select Agent', border: OutlineInputBorder()),
-                  items: controller.agents.map((agent) {
+                      labelText: 'Select Service', border: OutlineInputBorder()),
+                  items: controller.services.map((service) {
                     return DropdownMenuItem<int>(
-                      value: agent.id,
-                      child: Text(agent.name),
+                      value: service.id,
+                      child: Text(service.name),
                     );
                   }).toList(),
                   onChanged: (value) {
@@ -104,7 +104,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                   onPressed: () {
                     if (selectedAgentId != null && selectedArticleId != null) {
                       controller.addAffectation(Affectation(
-                        agent_id: selectedAgentId!,
+                        service_id: selectedAgentId!,
                         article_id: selectedArticleId!,
                         dateAffectation: selectedDate,
                       ));

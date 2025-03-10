@@ -2,19 +2,18 @@ import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/affectation.dart';
 import 'package:inventaire_cnas/models/agent.dart';
-import 'package:inventaire_cnas/models/service.dart';
 
 class AffectationController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   var affectations = <Affectation>[].obs;
-  var agents = <AgentC>[].obs;
   var services = <ServiceC>[].obs;
+ 
 
   @override
   void onInit() {
     super.onInit();
     fetchAffectations();
-    fetchAgents();
+    
     fetchServices();
   }
 
@@ -35,44 +34,27 @@ class AffectationController extends GetxController {
   }
 
   // Agents Management
-  Future<void> fetchAgents() async {
-    agents.value = await _dbHelper.getAgents();
-    update();
-  }
-
-  Future<void> addAgent(AgentC agent) async {
-    await _dbHelper.insertAgent(agent);
-    fetchAgents();
-  }
-
-  Future<void> updateAgent(AgentC agent) async {
-    await _dbHelper.updateAgent(agent);
-    fetchAgents();
-  }
-
-  Future<void> deleteAgent(int id) async {
-    await _dbHelper.deleteAgent(id);
-    fetchAgents();
-  }
-
-  // Services Management
   Future<void> fetchServices() async {
     services.value = await _dbHelper.getServices();
     update();
   }
 
-  Future<void> addService(ServiceC service) async {
-    await _dbHelper.insertService(service);
+  Future<void> addAgent(ServiceC agent) async {
+    await _dbHelper.insertService(agent);
     fetchServices();
   }
 
-  Future<void> updateService(ServiceC service) async {
-    await _dbHelper.updateService(service);
+  Future<void> updateAgent(ServiceC agent) async {
+    await _dbHelper.updateService(agent);
     fetchServices();
   }
 
-  Future<void> deleteService(int id) async {
+  Future<void> deleteAgent(int id) async {
     await _dbHelper.deleteService(id);
     fetchServices();
   }
+
+  
+  
+
 }

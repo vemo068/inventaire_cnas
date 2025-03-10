@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/controllers/affectation_controller.dart';
@@ -37,8 +38,8 @@ class StatistiquesPage extends StatelessWidget {
                           )),
                       Obx(() => ListTile(
                             leading: Icon(Icons.person, color: Colors.green),
-                            title: Text('Total Agents'),
-                            trailing: Text('${controller.agents.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            title: Text('Total services'),
+                            trailing: Text('${controller.services.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           )),
                       Obx(() => ListTile(
                             leading: Icon(Icons.assignment, color: Colors.red),
@@ -70,10 +71,11 @@ class StatistiquesPage extends StatelessWidget {
                                 final service = controller.services[index];
                                 final serviceName = dbController.allDesignations.firstWhere(
                                   (s) => s.id == service.id,
-                                  orElse: () => Designation(name: 'Unknown'),
+                                  orElse: () => Designation(name: 'Unknown', compte: ''),
                                 ).name;
-                                final count = controller.affectations.where((aff) =>
-                                    controller.agents.any((agent) => agent.service_id == service.id && agent.id == aff.agent_id)).length;
+                                // final count = controller.affectations.where((aff) =>
+                                //     controller.services.any((Service) => service.service_id == service.id && agent.id == aff.agent_id)).length;
+                                final count = controller.affectations.where((aff) => aff.service_id == service.id).length;
                                 return ListTile(
                                   leading: Icon(Icons.work, color: Colors.orangeAccent),
                                   title: Text(serviceName, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),

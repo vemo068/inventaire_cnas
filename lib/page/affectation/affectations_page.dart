@@ -161,9 +161,9 @@ class _AffectationsPageState extends State<AffectationsPage> {
                   }
                   return true;
                 }).map((affectation) {
-                  final agentName = controller.agents
+                  final agentName = controller.services
                       .firstWhere(
-                        (agent) => agent.id == affectation.agent_id,
+                        (agent) => agent.id == affectation.service_id,
                       )
                       .name;
                   final articleName = dbController.articles
