@@ -47,7 +47,7 @@ class HomePage extends StatelessWidget {
           _buildSidebarButton(context, Icons.insert_chart_outlined_rounded,
               "Bons de Commande", () => Get.to(() => const BonCommendesPage())),
           _buildSidebarButton(context, Icons.assignment, "Affectations",
-              () => Get.to(() => AffectationsNavigationPage())),
+              () => Get.to(() => const AffectationsNavigationPage())),
         ],
       ),
     );
@@ -72,7 +72,9 @@ class HomePage extends StatelessWidget {
   Widget _buildDashboard(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Obx(() => GridView.extent(
+      child: GetBuilder<DatabaseController>(
+        builder: (dbController) {
+          return GridView.extent(
             maxCrossAxisExtent: 300,
             crossAxisSpacing: 16.0,
             mainAxisSpacing: 16.0,
@@ -83,10 +85,20 @@ class HomePage extends StatelessWidget {
                   dbController.fournisseurs.length.toString()),
               _buildDashboardCard(context, Icons.assignment, "Bons de Commande",
                   dbController.bonDeCommendes.length.toString()),
-              _buildDashboardCard(context, Icons.check_circle, "Affectations",
-                  affectationController.affectations.length.toString()),
+              GetBuilder<AffectationController>(
+                builder: (affectationController) {
+                  return _buildDashboardCard(
+                    context,
+                    Icons.check_circle,
+                    "Affectations",
+                    affectationController.affectations.length.toString(),
+                  );
+                },
+              ),
             ],
-          )),
+          );
+        },
+      ),
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/article.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/pdf/bon_commende.dart';
+import 'package:inventaire_cnas/pdf/csv_bon_de_commende.dart';
 
 class EditBonCommendePage extends StatelessWidget {
   EditBonCommendePage({super.key});
@@ -19,6 +20,14 @@ class EditBonCommendePage extends StatelessWidget {
         backgroundColor: Colors.blue,
         elevation: 0,
         actions: [
+          IconButton(
+  icon: const Icon(Icons.download),
+  onPressed: () async {
+    await CSVBondeCommande.generateCSV(databaseController);
+    Get.snackbar("Succès", "CSV généré dans Documents", snackPosition: SnackPosition.BOTTOM);
+  },
+),
+
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () async {

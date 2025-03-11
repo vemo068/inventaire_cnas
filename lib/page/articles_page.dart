@@ -5,6 +5,7 @@ import 'package:inventaire_cnas/controllers/database_controller.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/page/add_article.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
+import 'package:inventaire_cnas/pdf/csv_stock.dart';
 
 class ArticlesPage extends StatefulWidget {
   const ArticlesPage({super.key});
@@ -20,7 +21,19 @@ class _ArticlesPageState extends State<ArticlesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Articles Page")),
+      appBar: AppBar(
+        title: const Text("Articles Page"),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.download),
+            onPressed: () async {
+              await CSVStock.generateCSV(databaseController);
+              Get.snackbar("Success", "CSV file generated in Documents folder",
+                  snackPosition: SnackPosition.BOTTOM);
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Row(
