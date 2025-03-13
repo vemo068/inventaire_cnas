@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:csv/csv.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
-import 'package:path_provider/path_provider.dart';
 
 class CSVBondeCommande {
   static Future<void> generateCSV(DatabaseController dbController) async {

@@ -1,5 +1,5 @@
 import 'package:inventaire_cnas/SQL/tables.dart';
-import 'package:inventaire_cnas/models/affectation.dart';
+import 'package:inventaire_cnas/models/bon_affectation.dart';
 import 'package:inventaire_cnas/models/affectation_unit.dart';
 import 'package:inventaire_cnas/models/agent.dart';
 import 'package:inventaire_cnas/models/article.dart';
@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  final String databaseName = "invtcnasbase10032025.db";
+  final String databaseName = "invtcnasbase13032025.db";
 
   // Database connection initialization
   Future<Database> init() async {
@@ -254,16 +254,16 @@ class DatabaseHelper {
   }
 
   // CRUD Operations for Affectations
-  Future<int> insertAffectation(Affectation affectation) async {
+  Future<int> insertAffectation(BonAffectation affectation) async {
     final db = await init();
     int result = await db.insert('affectations', affectation.toJson());
     return result;
   }
 
-  Future<List<Affectation>> getAffectations() async {
+  Future<List<BonAffectation>> getAffectations() async {
     final db = await init();
     final List<Map<String, dynamic>> maps = await db.query('affectations');
-    return List.generate(maps.length, (i) => Affectation.fromJson(maps[i]));
+    return List.generate(maps.length, (i) => BonAffectation.fromJson(maps[i]));
   }
 
   Future<int> deleteAffectation(int id) async {
@@ -326,5 +326,15 @@ class DatabaseHelper {
     );
     return await db.update('affectationUnits', affectationUnit.toJson(),
         where: 'id = ?', whereArgs: [affectationUnit.id]);
+  }
+
+  Future<List<AffectationUnit>> getAffectationUnitsByBonId(int bonAffectationId) async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query(
+      'affectationUnits',
+      where: 'affectation_id = ?',
+      whereArgs: [bonAffectationId],
+    );
+    return List.generate(maps.length, (i) => AffectationUnit.fromJson(maps[i]));
   }
 }

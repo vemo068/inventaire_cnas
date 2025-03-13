@@ -1,36 +1,38 @@
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/SQL/db_designation.dart';
-import 'package:inventaire_cnas/models/affectation.dart';
+import 'package:inventaire_cnas/models/affectation_unit.dart';
+import 'package:inventaire_cnas/models/bon_affectation.dart';
 import 'package:inventaire_cnas/models/agent.dart';
 
 class AffectationController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
-  var affectations = <Affectation>[].obs;
+  var bonAffectations = <BonAffectation>[].obs;
+  var affectationUnits = <AffectationUnit>[].obs;
+  BonAffectation? selectedBonAffectation;
   var services = <ServiceC>[].obs;
- 
 
   @override
   void onInit() {
     super.onInit();
-    fetchAffectations();
-    
+    fetchBonAffectations();
+
     fetchServices();
   }
 
   // Affectations Management
-  Future<void> fetchAffectations() async {
-    affectations.value = await _dbHelper.getAffectations();
+  Future<void> fetchBonAffectations() async {
+    bonAffectations.value = await _dbHelper.getAffectations();
     update();
   }
 
-  Future<void> addAffectation(Affectation affectation) async {
+  Future<void> addBonAffectation(BonAffectation affectation) async {
     await _dbHelper.insertAffectation(affectation);
-    fetchAffectations();
+    fetchBonAffectations();
   }
 
-  Future<void> deleteAffectation(int id) async {
+  Future<void> deleteBonAffectation(int id) async {
     await _dbHelper.deleteAffectation(id);
-    fetchAffectations();
+    fetchBonAffectations();
   }
 
   // Agents Management
@@ -54,7 +56,22 @@ class AffectationController extends GetxController {
     fetchServices();
   }
 
-  
-  
+  void updateBonAffectation(BonAffectation bonAffectation) {}
 
+  void fetchAffectationUnits(int bonAffectationId) async {
+    affectationUnits.value =
+        await _dbHelper.getAffectationUnitsByBonId(bonAffectationId);
+    update();
+    
+  }
+
+  void addAffectationUnit(AffectationUnit unit) async {
+    await _dbHelper.insertAffectationUnit(unit);
+    fetchAffectationUnits(unit.bonAffectationId);
+  }
+
+  void deleteAffectationUnit(int id) async {
+    await _dbHelper.deleteAffectationUnit(id);
+    affectationUnits.removeWhere((unit) => unit.id == id);
+  }
 }

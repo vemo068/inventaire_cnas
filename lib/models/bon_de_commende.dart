@@ -1,5 +1,3 @@
-import 'package:inventaire_cnas/models/article.dart';
-import 'package:inventaire_cnas/models/fournisseur.dart';
 
 class BonDeCommende {
   int? id;

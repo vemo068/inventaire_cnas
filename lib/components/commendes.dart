@@ -14,22 +14,22 @@ class Commendes extends StatelessWidget {
     return GetBuilder<DatabaseController>(
       init: databaseController,
       builder: (_) {
-        List<Commende> this_commendes = databaseController.commendes
+        List<Commende> thisCommendes = databaseController.commendes
             .where((element) =>
                 element.bonDeCommende_id ==
                 databaseController.selectedBonDeCommende!.id)
             .toList();
 
-        if (this_commendes.isEmpty) {
+        if (thisCommendes.isEmpty) {
           return const Center(
             child: Text("No Commendes."),
           );
         } else {
           return ListView.builder(
-            itemCount: this_commendes.length,
+            itemCount: thisCommendes.length,
             itemBuilder: (context, index) {
               return CommendeTile(
-                commende: this_commendes[index],
+                commende: thisCommendes[index],
               );
             },
           );

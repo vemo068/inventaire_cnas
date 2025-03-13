@@ -113,6 +113,7 @@ class DatabaseController extends GetxController {
   void fetchArticles() async {
     final data = await _dbHelper.getArticles();
     articles = data;
+    fetchAllArticles();
     update();
   }
 
@@ -140,8 +141,9 @@ class DatabaseController extends GetxController {
         designationCompteController.text == "") {
       Get.snackbar("Error", "Please fill all the fields");
     } else {
-      Designation designation =
-          Designation(name: designationNameController.text, compte: designationCompteController.text);
+      Designation designation = Designation(
+          name: designationNameController.text,
+          compte: designationCompteController.text);
       await _dbHelper.insertDesignation(designation);
       fetchDesignations();
       fetchAllDesignations();
@@ -287,5 +289,4 @@ class DatabaseController extends GetxController {
     fetchArticles();
     update();
   }
-
 }

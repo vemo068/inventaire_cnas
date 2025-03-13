@@ -4,7 +4,7 @@ import 'package:inventaire_cnas/components/textfield_pc.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
 
 class AddDesignationPage extends StatefulWidget {
-  AddDesignationPage({super.key});
+  const AddDesignationPage({super.key});
 
   @override
   _AddDesignationPageState createState() => _AddDesignationPageState();

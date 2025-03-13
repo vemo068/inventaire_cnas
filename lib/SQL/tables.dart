@@ -58,10 +58,8 @@ const String affectationTable = '''
   CREATE TABLE affectations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     service_id INTEGER NOT NULL,
-    article_id INTEGER NOT NULL,
     dateAffectation TEXT NOT NULL,
-    FOREIGN KEY (service_id) REFERENCES services(id),
-    FOREIGN KEY (article_id) REFERENCES articles(id)
+    FOREIGN KEY (service_id) REFERENCES services(id)
   )''';
 
 const String affectationUnitTable = '''

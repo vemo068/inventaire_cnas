@@ -23,16 +23,12 @@ class AddAgentPage extends StatelessWidget {
               controller: nameController,
               decoration: const InputDecoration(labelText: 'Name'),
             ),
-            
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                if (nameController.text.isNotEmpty &&
-                    postController.text.isNotEmpty &&
-                    selectedServiceId != null) {
+                if (nameController.text.isNotEmpty) {
                   controller.addAgent(ServiceC(
                     name: nameController.text,
-                   
                   ));
                   Get.back();
                 }

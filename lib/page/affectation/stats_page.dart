@@ -10,12 +10,14 @@ class StatistiquesPage extends StatelessWidget {
   final AffectationController controller = Get.find<AffectationController>();
   final DatabaseController dbController = Get.find<DatabaseController>();
 
+   StatistiquesPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Statistiques')),
+      appBar: AppBar(title: const Text('Statistiques')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -25,45 +27,45 @@ class StatistiquesPage extends StatelessWidget {
                 elevation: 4,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('General Statistics', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                      Divider(),
+                      const Text('General Statistics', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      const Divider(),
                       Obx(() => ListTile(
-                            leading: Icon(Icons.business, color: Colors.blue),
-                            title: Text('Total Services'),
-                            trailing: Text('${controller.services.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            leading: const Icon(Icons.business, color: Colors.blue),
+                            title: const Text('Total Services'),
+                            trailing: Text('${controller.services.length}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           )),
                       Obx(() => ListTile(
-                            leading: Icon(Icons.person, color: Colors.green),
-                            title: Text('Total services'),
-                            trailing: Text('${controller.services.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            leading: const Icon(Icons.person, color: Colors.green),
+                            title: const Text('Total services'),
+                            trailing: Text('${controller.services.length}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           )),
                       Obx(() => ListTile(
-                            leading: Icon(Icons.assignment, color: Colors.red),
-                            title: Text('Total Affectations'),
-                            trailing: Text('${controller.affectations.length}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                            leading: const Icon(Icons.assignment, color: Colors.red),
+                            title: const Text('Total Affectations'),
+                            trailing: Text('${controller.bonAffectations.length}', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                           )),
                     ],
                   ),
                 ),
               ),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(
               flex: 2,
               child: Card(
                 elevation: 4,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 child: Padding(
-                  padding: EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Affectations per Service', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
-                      Divider(),
+                      const Text('Affectations per Service', style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+                      const Divider(),
                       Expanded(
                         child: Obx(() => ListView.builder(
                               itemCount: controller.services.length,
@@ -75,11 +77,11 @@ class StatistiquesPage extends StatelessWidget {
                                 ).name;
                                 // final count = controller.affectations.where((aff) =>
                                 //     controller.services.any((Service) => service.service_id == service.id && agent.id == aff.agent_id)).length;
-                                final count = controller.affectations.where((aff) => aff.service_id == service.id).length;
+                                final count = controller.bonAffectations.where((aff) => aff.service_id == service.id).length;
                                 return ListTile(
-                                  leading: Icon(Icons.work, color: Colors.orangeAccent),
-                                  title: Text(serviceName, style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-                                  trailing: Text('$count Affectations', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
+                                  leading: const Icon(Icons.work, color: Colors.orangeAccent),
+                                  title: Text(serviceName, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+                                  trailing: Text('$count Affectations', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black87)),
                                 );
                               },
                             )),

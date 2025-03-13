@@ -90,8 +90,8 @@ class HomePage extends StatelessWidget {
                   return _buildDashboardCard(
                     context,
                     Icons.check_circle,
-                    "Affectations",
-                    affectationController.affectations.length.toString(),
+                    "Bon Sorties",
+                    affectationController.bonAffectations.length.toString(),
                   );
                 },
               ),
