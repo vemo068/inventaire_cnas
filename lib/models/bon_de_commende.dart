@@ -1,4 +1,3 @@
-
 class BonDeCommende {
   int? id;
   String date;
@@ -29,7 +28,7 @@ class BonDeCommende {
       'id': id,
       'date': date,
       'fournisseur_id': fournisseur_id,
-      'dateBonDeCommende': dateBonDeCommende.toIso8601String(),
+      'dateBonDeCommende': dateBonDeCommende.toIso8601String().split('T')[0],
       'montantTotal': montantTotal,
     };
   }

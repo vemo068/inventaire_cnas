@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/page/articles_page.dart';
 import 'package:inventaire_cnas/page/bon_commendes.dart';
+import 'package:inventaire_cnas/page/journal.dart';
 import 'package:inventaire_cnas/page/list_fournisseurs.dart';
 import 'package:inventaire_cnas/page/affectation/nav_affectation.dart';
 import 'package:inventaire_cnas/page/add_designation.dart';
@@ -41,13 +42,15 @@ class HomePage extends StatelessWidget {
           _buildSidebarButton(context, Icons.article, "Articles",
               () => Get.to(() => const ArticlesPage())),
           _buildSidebarButton(context, Icons.design_services, "Designations",
-              () => Get.to(() => AddDesignationPage())),
+              () => Get.to(() => const AddDesignationPage())),
           _buildSidebarButton(context, Icons.groups, "Fournisseurs",
               () => Get.to(() => ListFournisseursPage())),
           _buildSidebarButton(context, Icons.insert_chart_outlined_rounded,
               "Bons de Commande", () => Get.to(() => const BonCommendesPage())),
           _buildSidebarButton(context, Icons.assignment, "Affectations",
               () => Get.to(() => const AffectationsNavigationPage())),
+          _buildSidebarButton(context, Icons.newspaper, "Journal du stock",
+              () => Get.to(() => const JournalDuStockPage())),
         ],
       ),
     );

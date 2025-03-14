@@ -12,8 +12,10 @@ class AffectationsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AffectationController affectationController = Get.find<AffectationController>();
-    final DatabaseController databaseController = Get.find<DatabaseController>();
+    final AffectationController affectationController =
+        Get.find<AffectationController>();
+    final DatabaseController databaseController =
+        Get.find<DatabaseController>();
 
     return Scaffold(
       floatingActionButton: FloatingActionButton.extended(
@@ -30,7 +32,8 @@ class AffectationsPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Card(
           elevation: 4,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Obx(() => DataTable(
@@ -41,28 +44,38 @@ class AffectationsPage extends StatelessWidget {
                     DataColumn(label: Text("Actions")),
                   ],
                   rows: affectationController.bonAffectations.map((bon) {
-                    final service = affectationController.services.firstWhereOrNull((s) => s.id == bon.service_id)?.name ?? "N/A";
+                    final service = affectationController.services
+                            .firstWhereOrNull((s) => s.id == bon.service_id)
+                            ?.name ??
+                        "N/A";
                     return DataRow(cells: [
                       DataCell(Text(service)),
-                      DataCell(Text(bon.dateAffectation.toIso8601String().split('T')[0])),
+                      DataCell(Text(
+                          bon.dateAffectation.toIso8601String().split('T')[0])),
                       DataCell(Row(
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.add_box, color: Colors.green),
+                            icon:
+                                const Icon(Icons.add_box, color: Colors.green),
                             onPressed: () {
-                              Get.to(() => AddAffectationUnitPage(bonAffectation: bon));
+                              affectationController
+                                  .fetchAffectationUnitsByBonId(bon.id!);
+                              Get.to(() =>
+                                  AddAffectationUnitPage(bonAffectation: bon));
                             },
                           ),
                           IconButton(
                             icon: const Icon(Icons.edit, color: Colors.blue),
                             onPressed: () {
-                              Get.to(() => EditAffectationPage(bonAffectation: bon));
+                              Get.to(() =>
+                                  EditAffectationPage(bonAffectation: bon));
                             },
                           ),
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () {
-                              affectationController.deleteBonAffectation(bon.id!);
+                              affectationController
+                                  .deleteBonAffectation(bon.id!);
                             },
                           ),
                         ],

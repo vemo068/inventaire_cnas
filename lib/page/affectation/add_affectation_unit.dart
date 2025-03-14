@@ -16,7 +16,8 @@ class AddAffectationUnitPage extends StatefulWidget {
 }
 
 class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
-  final AffectationController affectationController = Get.find<AffectationController>();
+  final AffectationController affectationController =
+      Get.find<AffectationController>();
   final DatabaseController dbController = Get.find<DatabaseController>();
   Article? selectedArticle;
   final TextEditingController quantityController = TextEditingController();
@@ -53,9 +54,12 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Service: ${affectationController.services.firstWhere((s) => s.id == widget.bonAffectation.service_id).name}",
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text("Date: ${widget.bonAffectation.dateAffectation.toIso8601String().split('T')[0]}"),
+            Text(
+                "Service: ${affectationController.services.firstWhere((s) => s.id == widget.bonAffectation.service_id).name}",
+                style:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(
+                "Date: ${widget.bonAffectation.dateAffectation.toIso8601String().split('T')[0]}"),
             const SizedBox(height: 20),
             const Text("Ajouter une Unité d'Affectation",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
@@ -66,7 +70,8 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                if (selectedArticle != null && quantityController.text.isNotEmpty) {
+                if (selectedArticle != null &&
+                    quantityController.text.isNotEmpty) {
                   affectationController.addAffectationUnit(
                     AffectationUnit(
                       bonAffectationId: widget.bonAffectation.id!,
@@ -75,6 +80,7 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
                     ),
                   );
                   quantityController.clear();
+                  dbController.fetchArticles();
                   setState(() {});
                 }
               },
@@ -90,10 +96,10 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
     return GetBuilder<DatabaseController>(
       builder: (controller) {
         return DropdownSearch<Article>(
-          popupProps: PopupProps.menu(
+          popupProps: const PopupProps.menu(
             showSearchBox: true,
             searchFieldProps: TextFieldProps(
-              decoration: const InputDecoration(labelText: "Rechercher un article"),
+              decoration: InputDecoration(labelText: "Rechercher un article"),
             ),
           ),
           items: controller.articles,
@@ -103,8 +109,8 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
               selectedArticle = value;
             });
           },
-          dropdownDecoratorProps: DropDownDecoratorProps(
-            dropdownSearchDecoration: const InputDecoration(
+          dropdownDecoratorProps: const DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
               labelText: "Article",
               border: OutlineInputBorder(),
             ),
@@ -117,7 +123,8 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
   Widget _buildQuantityInput() {
     return TextField(
       controller: quantityController,
-      decoration: const InputDecoration(labelText: "Quantité", border: OutlineInputBorder()),
+      decoration: const InputDecoration(
+          labelText: "Quantité", border: OutlineInputBorder()),
       keyboardType: TextInputType.number,
     );
   }
@@ -127,7 +134,10 @@ class _AddAffectationUnitPageState extends State<AddAffectationUnitPage> {
           itemCount: affectationController.affectationUnits.length,
           itemBuilder: (context, index) {
             final unit = affectationController.affectationUnits[index];
-            final articleName = dbController.articles.firstWhereOrNull((a) => a.id == unit.articleId)?.articleName ?? "N/A";
+            final articleName = dbController.articles
+                    .firstWhereOrNull((a) => a.id == unit.articleId)
+                    ?.articleName ??
+                "N/A";
             return Card(
               elevation: 2,
               margin: const EdgeInsets.symmetric(vertical: 4.0),

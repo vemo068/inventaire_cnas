@@ -1,3 +1,4 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/components/commendes.dart';
@@ -21,13 +22,13 @@ class EditBonCommendePage extends StatelessWidget {
         elevation: 0,
         actions: [
           IconButton(
-  icon: const Icon(Icons.download),
-  onPressed: () async {
-    await CSVBondeCommande.generateCSV(databaseController);
-    Get.snackbar("Succès", "CSV généré dans Documents", snackPosition: SnackPosition.BOTTOM);
-  },
-),
-
+            icon: const Icon(Icons.download),
+            onPressed: () async {
+              await CSVBondeCommande.generateCSV(databaseController);
+              Get.snackbar("Succès", "CSV généré dans Documents",
+                  snackPosition: SnackPosition.BOTTOM);
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.picture_as_pdf),
             onPressed: () async {
@@ -63,36 +64,41 @@ class EditBonCommendePage extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
+        child: SingleChildScrollView(
+          // ✅ Added to prevent overflow
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
                 "Fournisseur: ${databaseController.fournisseurs.firstWhere((f) => f.id == databaseController.selectedBonDeCommende?.fournisseur_id).name ?? 'N/A'}",
                 style:
-                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            Text(
-                "Date: ${databaseController.selectedBonDeCommende?.date ?? 'N/A'}"),
-            Text(
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                  "Date: ${databaseController.selectedBonDeCommende?.date ?? 'N/A'}"),
+              Text(
                 "Total: ${databaseController.selectedBonDeCommende?.montantTotal ?? 0} DA",
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                    color: Colors.red)),
-            const SizedBox(height: 20),
-            const Text("Ajouter une Commande",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            _buildCategoryDropdown(),
-            const SizedBox(height: 10),
-            _buildArticleDropdown(),
-            const SizedBox(height: 10),
-            _buildQuantityInput(),
-            const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => databaseController.addCommende(),
-              child: const Text("Ajouter"),
-            ),
-          ],
+                    color: Colors.red),
+              ),
+              const SizedBox(height: 20),
+              const Text("Ajouter une Commande",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _buildCategoryDropdown(),
+              const SizedBox(height: 10),
+              _buildArticleDropdown(),
+              const SizedBox(height: 10),
+              _buildQuantityInput(),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: () => databaseController.addCommende(),
+                child: const Text("Ajouter"),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -120,21 +126,27 @@ class EditBonCommendePage extends StatelessWidget {
   Widget _buildArticleDropdown() {
     return GetBuilder<DatabaseController>(
       builder: (controller) {
-        return DropdownButtonFormField<Article>(
-          decoration: const InputDecoration(
-              labelText: "Article", border: OutlineInputBorder()),
-          items: controller.allArticles
-              .where((article) =>
-                  article.designation_id ==
-                  controller.selectedDesignationForCommende?.id)
-              .map((article) {
-            return DropdownMenuItem(
-                value: article, child: Text(article.articleName));
-          }).toList(),
+        return DropdownSearch<Article>(
+          popupProps: const PopupProps.menu(
+            showSearchBox: true,
+            searchFieldProps: TextFieldProps(
+              decoration: InputDecoration(labelText: "Rechercher un article"),
+            ),
+          ),
+          items: controller.articles, // Ensure unique items
+          itemAsString: (Article article) => article.articleName,
+          selectedItem: controller
+              .selectedArticleForCommende, // Ensure this matches an item in the list
           onChanged: (value) {
             controller.selectedArticleForCommende = value;
             controller.update();
           },
+          dropdownDecoratorProps: const DropDownDecoratorProps(
+            dropdownSearchDecoration: InputDecoration(
+              labelText: "Article",
+              border: OutlineInputBorder(),
+            ),
+          ),
         );
       },
     );

@@ -8,6 +8,7 @@ class AffectationController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
   var bonAffectations = <BonAffectation>[].obs;
   var affectationUnits = <AffectationUnit>[].obs;
+  var allAffectationUnits = <AffectationUnit>[].obs;
   BonAffectation? selectedBonAffectation;
   var services = <ServiceC>[].obs;
 
@@ -58,20 +59,24 @@ class AffectationController extends GetxController {
 
   void updateBonAffectation(BonAffectation bonAffectation) {}
 
-  void fetchAffectationUnits(int bonAffectationId) async {
+  void fetchAffectationUnitsByBonId(int bonAffectationId) async {
     affectationUnits.value =
         await _dbHelper.getAffectationUnitsByBonId(bonAffectationId);
     update();
-    
   }
 
   void addAffectationUnit(AffectationUnit unit) async {
     await _dbHelper.insertAffectationUnit(unit);
-    fetchAffectationUnits(unit.bonAffectationId);
+    fetchAffectationUnitsByBonId(unit.bonAffectationId);
   }
 
   void deleteAffectationUnit(int id) async {
     await _dbHelper.deleteAffectationUnit(id);
     affectationUnits.removeWhere((unit) => unit.id == id);
+  }
+
+  fetchAffectationUnits() async {
+    allAffectationUnits.value = await _dbHelper.getAffectationUnits();
+    update();
   }
 }
