@@ -51,7 +51,8 @@ class CSVBondeCommande {
         orElse: () => throw Exception("Article not found"),
       );
 
-      double montantTTC = article.montantTTC;
+      double montantTTC =
+          article.priceHT * (1 + article.tva / 100) * commande.quantite;
       totalMontantTTC += montantTTC;
 
       data.add([

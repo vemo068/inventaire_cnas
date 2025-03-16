@@ -48,7 +48,7 @@ class StatistiquesPage extends StatelessWidget {
                       Obx(() => ListTile(
                             leading:
                                 const Icon(Icons.assignment, color: Colors.red),
-                            title: const Text('Total Affectations'),
+                            title: const Text('Total Bons de Sortie'),
                             trailing: Text(
                                 '${affectationController.bonAffectations.length}',
                                 style: const TextStyle(
@@ -71,7 +71,7 @@ class StatistiquesPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Affectations per Service',
+                      const Text('Bons de Sortie per Service',
                           style: TextStyle(
                               fontSize: 22, fontWeight: FontWeight.bold)),
                       const Divider(),
@@ -102,7 +102,7 @@ class StatistiquesPage extends StatelessWidget {
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.w500)),
-                                  trailing: Text('$count Affectations',
+                                  trailing: Text('$count Bons de Sortie',
                                       style: const TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.bold,

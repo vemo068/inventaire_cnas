@@ -21,7 +21,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Affectation')),
+      appBar: AppBar(title: const Text('Ajoute Bon de sortie')),
       body: Center(
         child: Card(
           elevation: 8,
@@ -33,7 +33,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('New Affectation',
+                const Text('Nouveaux Bon de Sortie',
                     style:
                         TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 20),
@@ -93,7 +93,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                       Get.back();
                     }
                   },
-                  child: const Text('Add Affectation',
+                  child: const Text('Ajoute Bon de Sortie',
                       style: TextStyle(fontSize: 18)),
                 ),
               ],

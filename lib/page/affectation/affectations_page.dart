@@ -22,11 +22,11 @@ class AffectationsPage extends StatelessWidget {
         onPressed: () {
           Get.to(() => const AddAffectationPage());
         },
-        label: const Text("Ajouter Bon d'Affectation"),
+        label: const Text("Ajouter Bon Sortie"),
         icon: const Icon(Icons.assignment),
       ),
       appBar: AppBar(
-        title: const Text("Liste des Bons d'Affectation"),
+        title: const Text("Liste des Bons de Sortie"),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -40,7 +40,7 @@ class AffectationsPage extends StatelessWidget {
                   columnSpacing: 16.0,
                   columns: const [
                     DataColumn(label: Text("Service")),
-                    DataColumn(label: Text("Date Affectation")),
+                    DataColumn(label: Text("Date Edition")),
                     DataColumn(label: Text("Actions")),
                   ],
                   rows: affectationController.bonAffectations.map((bon) {
