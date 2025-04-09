@@ -89,6 +89,7 @@ class _EditAffectationPageState extends State<EditAffectationPage> {
                     if (selectedServiceId != null) {
                       affectationController.updateBonAffectation(
                         BonAffectation(
+                          numeroBonAffectation: widget.bonAffectation.numeroBonAffectation,
                           id: widget.bonAffectation.id,
                           service_id: selectedServiceId!,
                           dateAffectation: selectedDate,

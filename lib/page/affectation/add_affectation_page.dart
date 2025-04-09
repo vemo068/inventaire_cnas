@@ -16,6 +16,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
   final DatabaseController dbController = Get.find<DatabaseController>();
   int? selectedServiceId;
   int? selectedArticleId;
+  final TextEditingController numeroBonController = TextEditingController();
   DateTime selectedDate = DateTime.now(); // Default to today
 
   @override
@@ -52,6 +53,14 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                       selectedServiceId = value;
                     });
                   },
+                ), const SizedBox(height: 16),
+
+                TextFormField(
+                  controller: numeroBonController,
+                  decoration: const InputDecoration(
+                    labelText: 'Numéro Bon de Sortie',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -87,6 +96,7 @@ class _AddAffectationPageState extends State<AddAffectationPage> {
                   onPressed: () {
                     if (selectedServiceId != null) {
                       controller.addBonAffectation(BonAffectation(
+                        numeroBonAffectation: numeroBonController.text,
                         service_id: selectedServiceId!,
                         dateAffectation: selectedDate,
                       ));

@@ -13,7 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  final String databaseName = "invtcnasbase13032025.db";
+  final String databaseName = "invtcnasbase09042025.db";
 
   // Database connection initialization
   Future<Database> init() async {
@@ -328,7 +328,8 @@ class DatabaseHelper {
         where: 'id = ?', whereArgs: [affectationUnit.id]);
   }
 
-  Future<List<AffectationUnit>> getAffectationUnitsByBonId(int bonAffectationId) async {
+  Future<List<AffectationUnit>> getAffectationUnitsByBonId(
+      int bonAffectationId) async {
     final db = await init();
     final List<Map<String, dynamic>> maps = await db.query(
       'affectationUnits',

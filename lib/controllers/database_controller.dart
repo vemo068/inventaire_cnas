@@ -28,6 +28,8 @@ class DatabaseController extends GetxController {
   Designation? selectedDesignation;
   Fournisseur? selectedFournisseur;
   BonDeCommende? selectedBonDeCommende;
+  TextEditingController numuroBonDeCommendeController =
+      TextEditingController(); // for the bon de commende
 
   TextEditingController designationNameController = TextEditingController();
   TextEditingController designationCompteController = TextEditingController();
@@ -50,6 +52,8 @@ class DatabaseController extends GetxController {
   Article? selectedArticleToUpdate;
 
   var selectedValue;
+
+  
 
   @override
   void onInit() {
@@ -102,7 +106,7 @@ class DatabaseController extends GetxController {
       // Return 'Unknown' if not found
     );
 
-    return designation.name;
+    return designation.compte;
   }
 
   Article getArticleById(int id) {
@@ -199,18 +203,25 @@ class DatabaseController extends GetxController {
   }
 
   // Add a new bon de commendes
-  void addBonDeCommende() async {
+  void addBonDeCommende(DateTime picked_date) async {
     if (selectedFournisseur == null) {
       Get.snackbar("Error", "Please fill all the fields");
     } else {
       BonDeCommende bonDeCommende = BonDeCommende(
-        date: DateTime.now().toString(),
+        numuroBonDeCommende: numuroBonDeCommendeController.text,
+        date: picked_date.toString(),
         fournisseur_id: selectedFournisseur!.id!,
-        dateBonDeCommende: DateTime.now(),
+        dateBonDeCommende: picked_date,
         montantTotal: 0.0,
       );
-      await _dbHelper.insertBonDeCommende(bonDeCommende);
+      try {
+        await _dbHelper.insertBonDeCommende(bonDeCommende);
+      } on Exception catch (e) {
+        // TODO
+      }
+      numuroBonDeCommendeController.clear();
       fetchBonDeCommendes();
+
       selectedFournisseur = null;
       update();
     }
@@ -222,6 +233,7 @@ class DatabaseController extends GetxController {
     BonDeCommende bonDeCommende = BonDeCommende(
       id: selectedBonDeCommende!.id,
       date: selectedBonDeCommende!.date,
+      numuroBonDeCommende: selectedBonDeCommende!.numuroBonDeCommende,
       fournisseur_id: selectedBonDeCommende!.fournisseur_id,
       dateBonDeCommende: selectedBonDeCommende!.dateBonDeCommende,
       montantTotal: selectedBonDeCommende!.montantTotal! + total,

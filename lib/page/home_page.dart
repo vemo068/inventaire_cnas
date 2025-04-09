@@ -49,7 +49,7 @@ class HomePage extends StatelessWidget {
           _buildSidebarButton(context, Icons.groups, "Fournisseurs",
               () => Get.to(() => ListFournisseursPage())),
           _buildSidebarButton(context, Icons.insert_chart_outlined_rounded,
-              "Bons de Commande", () => Get.to(() => const BonCommendesPage())),
+              "Bons de Commande", () => Get.to(() =>  BonCommendesPage())),
           _buildSidebarButton(context, Icons.assignment, "Bons de Sorties",
               () => Get.to(() => const AffectationsPage())),
           _buildSidebarButton(context, Icons.group, "Les services",

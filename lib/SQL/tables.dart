@@ -42,6 +42,7 @@ const String bonDeCommendeTable = '''
       date TEXT NOT NULL,
       fournisseur_id INTEGER NOT NULL,
       dateBonDeCommende TEXT NOT NULL,
+      numuroBonDeCommende TEXT NOT NULL,
       montantTotal REAL,
       FOREIGN KEY (fournisseur_id) REFERENCES fournisseurs (id)
     )''';
@@ -58,6 +59,7 @@ const String affectationTable = '''
   CREATE TABLE affectations (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     service_id INTEGER NOT NULL,
+    numeroBonAffectation TEXT NOT NULL,
     dateAffectation TEXT NOT NULL,
     FOREIGN KEY (service_id) REFERENCES services(id)
   )''';

@@ -18,7 +18,7 @@ class ArticlesTable extends StatelessWidget {
             scrollDirection: Axis.horizontal,
             child: DataTable(
               columns: const [
-                DataColumn(label: Text('Designation')),
+                DataColumn(label: Text('Compte')),
                 DataColumn(label: Text('Article')),
                 DataColumn(label: Text('Description')),
                 DataColumn(label: Text('Quantity')),
