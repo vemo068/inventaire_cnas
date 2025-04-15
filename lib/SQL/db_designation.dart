@@ -7,13 +7,14 @@ import 'package:inventaire_cnas/models/bon_de_commende.dart';
 import 'package:inventaire_cnas/models/commende.dart';
 import 'package:inventaire_cnas/models/designation.dart';
 import 'package:inventaire_cnas/models/fournisseur.dart';
+import 'package:inventaire_cnas/models/gestion.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 class DatabaseHelper {
-  final String databaseName = "invtcnasbase09042025.db";
+  final String databaseName = "invtcnasbase15042025.db";
 
   // Database connection initialization
   Future<Database> init() async {
@@ -29,6 +30,7 @@ class DatabaseHelper {
         await db.execute(fournisseurTable);
         await db.execute(bonDeCommendeTable);
         await db.execute(commendeTable);
+        await db.execute(gestionTable);
         await db.execute(servicesTable);
         await db.execute(affectationTable);
         await db.execute(affectationUnitTable);
@@ -337,5 +339,39 @@ class DatabaseHelper {
       whereArgs: [bonAffectationId],
     );
     return List.generate(maps.length, (i) => AffectationUnit.fromJson(maps[i]));
+  }
+
+  // CRUD Operations for Gestion
+
+  Future<int> insertGestion(Gestion gestion) async {
+    final db = await init();
+    return await db.insert('gestion', gestion.toJson());
+  }
+
+  Future<List<Gestion>> getGestions() async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps = await db.query('gestion');
+    return List.generate(maps.length, (i) => Gestion.fromJson(maps[i]));
+  }
+
+  Future<int> updateGestion(Gestion gestion) async {
+    final db = await init();
+    return await db.update('gestion', gestion.toJson(),
+        where: 'id = ?', whereArgs: [gestion.id]);
+  }
+
+  Future<int> deleteGestion(int id) async {
+    final db = await init();
+    return await db.delete('gestion', where: 'id = ?', whereArgs: [id]);
+  }
+
+  Future<Gestion?> getGestionsById(int id) async {
+    final db = await init();
+    final List<Map<String, dynamic>> maps =
+        await db.query('gestion', where: 'id = ?', whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return Gestion.fromJson(maps.first);
+    }
+    return null;
   }
 }

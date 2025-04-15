@@ -3,6 +3,7 @@ import 'package:inventaire_cnas/SQL/db_designation.dart';
 import 'package:inventaire_cnas/models/affectation_unit.dart';
 import 'package:inventaire_cnas/models/bon_affectation.dart';
 import 'package:inventaire_cnas/models/agent.dart';
+import 'package:inventaire_cnas/models/gestion.dart';
 
 class AffectationController extends GetxController {
   final DatabaseHelper _dbHelper = DatabaseHelper();
@@ -11,12 +12,13 @@ class AffectationController extends GetxController {
   var allAffectationUnits = <AffectationUnit>[].obs;
   BonAffectation? selectedBonAffectation;
   var services = <ServiceC>[].obs;
+  List<Gestion> gestions = [];
 
   @override
   void onInit() {
     super.onInit();
     fetchBonAffectations();
-
+    fetchGestions();
     fetchServices();
   }
 
@@ -78,5 +80,32 @@ class AffectationController extends GetxController {
   fetchAffectationUnits() async {
     allAffectationUnits.value = await _dbHelper.getAffectationUnits();
     update();
+  }
+
+  // gestions management
+
+  Future<void> fetchGestions() async {
+    gestions = await _dbHelper.getGestions();
+    update();
+  }
+
+  Future<void> addGestion(Gestion gestion) async {
+    await _dbHelper.insertGestion(gestion);
+    fetchGestions();
+  }
+
+  Future<void> updateGestion(Gestion gestion) async {
+    await _dbHelper.updateGestion(gestion);
+    fetchGestions();
+  }
+
+  Future<void> deleteGestion(int id) async {
+    await _dbHelper.deleteGestion(id);
+    fetchGestions();
+  }
+
+  Future<Gestion> fetchGestionsById(int id) async {
+    // get the gestion from gestions list
+    return gestions.firstWhere((gestion) => gestion.id == id);
   }
 }

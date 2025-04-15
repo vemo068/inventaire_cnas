@@ -30,7 +30,7 @@ class ArticlesTable extends StatelessWidget {
               rows: controller.articles
                   .map((article) => DataRow(cells: [
                         DataCell(Text(controller
-                            .getDesignationNameByid(article.designation_id))),
+                            .getDesignationCompteByid(article.designation_id))),
                         DataCell(Text(article.articleName ?? '')),
                         DataCell(Text(article.description)),
                         DataCell(Text(article.quantity.toString())),

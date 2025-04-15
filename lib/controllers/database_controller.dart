@@ -53,8 +53,6 @@ class DatabaseController extends GetxController {
 
   var selectedValue;
 
-  
-
   @override
   void onInit() {
     super.onInit();
@@ -99,7 +97,7 @@ class DatabaseController extends GetxController {
     allBonDeCommendes = data;
   }
 
-  String getDesignationNameByid(int idddd) {
+  String getDesignationCompteByid(int idddd) {
 // Find the designation with the matching id
     var designation = allDesignations.firstWhere(
       (d) => d.id == idddd,

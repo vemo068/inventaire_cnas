@@ -51,6 +51,14 @@ const String bonDeCommendeTable = '''
 const String servicesTable = '''
   CREATE TABLE services (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    gestion_id INTEGER NOT NULL,
+    name TEXT NOT NULL,
+    FOREIGN KEY (gestion_id) REFERENCES gestion(id)
+  )''';
+
+const String gestionTable = '''
+  CREATE TABLE gestion (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL
   )''';
 

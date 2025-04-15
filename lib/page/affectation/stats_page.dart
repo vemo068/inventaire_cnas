@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:inventaire_cnas/controllers/affectation_controller.dart';
 import 'package:inventaire_cnas/controllers/database_controller.dart';
-import 'package:inventaire_cnas/models/agent.dart';
-import 'package:inventaire_cnas/models/designation.dart';
 
 class StatistiquesPage extends StatelessWidget {
   final AffectationController affectationController =
@@ -85,7 +83,7 @@ class StatistiquesPage extends StatelessWidget {
                                     .services
                                     .firstWhere(
                                       (s) => s.id == service.id,
-                                      orElse: () => ServiceC(name: 'Unknown'),
+                                     // orElse: () => ServiceC(name: 'Unknown'),
                                     )
                                     .name;
                                 // final count = controller.affectations.where((aff) =>

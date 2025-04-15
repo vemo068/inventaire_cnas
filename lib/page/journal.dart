@@ -17,10 +17,12 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
   final DatabaseController dbController = Get.find<DatabaseController>();
   final AffectationController affectationController =
       Get.find<AffectationController>();
-      List<Map<String, dynamic>> movements = [];
+  List<Map<String, dynamic>> movements = [];
 
   // Filter variables
   final TextEditingController articleSearchController = TextEditingController();
+  final TextEditingController designationSearchController =
+      TextEditingController();
   DateTime? startDate;
   DateTime? endDate;
 
@@ -30,13 +32,13 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
     _fetchData();
   }
 
-  // Fetch the required data from the controllers
   Future<void> _fetchData() async {
     await affectationController.fetchAffectationUnits();
     dbController.fetchArticles();
     dbController.fetchCommendes();
     dbController.fetchBonDeCommendes();
-    await affectationController.fetchBonAffectations();
+    affectationController.fetchBonAffectations();
+    dbController.fetchAllDesignations();
   }
 
   @override
@@ -48,7 +50,6 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
           IconButton(
             icon: const Icon(Icons.download),
             onPressed: () async {
-              // Assuming you have filter variables (searchQuery, startDate, endDate) in your state:
               await JournalCSV().generateCSV(
                 movements: movements,
                 searchQuery: articleSearchController.text,
@@ -72,7 +73,6 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
     );
   }
 
-  // Left filter panel
   Widget _buildFilterPanel() {
     return Container(
       width: 300,
@@ -88,15 +88,20 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
           const Text("Filtres",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           const SizedBox(height: 16),
-          // Article search field
           TextField(
             controller: articleSearchController,
             decoration: const InputDecoration(
                 labelText: "Article", border: OutlineInputBorder()),
-            onChanged: (value) => setState(() {}),
+            onChanged: (_) => setState(() {}),
           ),
           const SizedBox(height: 16),
-          // Start Date picker
+          TextField(
+            controller: designationSearchController,
+            decoration: const InputDecoration(
+                labelText: "Désignation Compte", border: OutlineInputBorder()),
+            onChanged: (_) => setState(() {}),
+          ),
+          const SizedBox(height: 16),
           const Text("Date de début:",
               style: TextStyle(fontWeight: FontWeight.bold)),
           TextButton(
@@ -107,17 +112,13 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
                 firstDate: DateTime(2000),
                 lastDate: DateTime(2101),
               );
-              if (picked != null)
-                setState(() {
-                  startDate = picked;
-                });
+              if (picked != null) setState(() => startDate = picked);
             },
             child: Text(startDate != null
                 ? DateFormat('dd-MM-yyyy').format(startDate!)
                 : 'Sélectionner'),
           ),
           const SizedBox(height: 16),
-          // End Date picker
           const Text("Date de fin:",
               style: TextStyle(fontWeight: FontWeight.bold)),
           TextButton(
@@ -128,21 +129,18 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
                 firstDate: DateTime(2000),
                 lastDate: DateTime(2101),
               );
-              if (picked != null)
-                setState(() {
-                  endDate = picked;
-                });
+              if (picked != null) setState(() => endDate = picked);
             },
             child: Text(endDate != null
                 ? DateFormat('dd-MM-yyyy').format(endDate!)
                 : 'Sélectionner'),
           ),
           const SizedBox(height: 16),
-          // Reset filters button
           ElevatedButton(
             onPressed: () {
               setState(() {
                 articleSearchController.clear();
+                designationSearchController.clear();
                 startDate = null;
                 endDate = null;
               });
@@ -154,30 +152,28 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
     );
   }
 
-  // Right data table panel
   Widget _buildDataTable() {
     return FutureBuilder(
       future: _fetchData(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting)
+        if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
+        }
         return Obx(() {
-          
+          movements.clear();
 
-          // Add commande movements (Ajouté)
           for (var commande in dbController.commendes) {
             var bon = dbController.bonDeCommendes
                 .firstWhereOrNull((b) => b.id == commande.bonDeCommende_id);
             movements.add({
               "article": dbController.articles
                   .firstWhereOrNull((a) => a.id == commande.article_id),
-              "type": "Ajouté",
+              "type": "Entré",
               "quantity": commande.quantite,
               "date": bon?.date ?? "N/A"
             });
           }
 
-          // Add affectation movements (Sortie)
           for (var affectation in affectationController.allAffectationUnits) {
             var bon = affectationController.bonAffectations
                 .firstWhereOrNull((b) => b.id == affectation.bonAffectationId);
@@ -191,14 +187,23 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
             });
           }
 
-          // Apply filters
           if (articleSearchController.text.isNotEmpty) {
             movements = movements.where((m) {
               Article? article = m["article"];
-              if (article == null) return false;
-              return article.articleName
-                  .toLowerCase()
-                  .contains(articleSearchController.text.toLowerCase());
+              return article != null &&
+                  article.articleName
+                      .toLowerCase()
+                      .contains(articleSearchController.text.toLowerCase());
+            }).toList();
+          }
+          if (designationSearchController.text.isNotEmpty) {
+            movements = movements.where((m) {
+              Article? article = m["article"];
+              final designation = dbController
+                  .getDesignationCompteByid(article?.designation_id ?? -1)
+                  .toLowerCase();
+              return designation
+                  .contains(designationSearchController.text.toLowerCase());
             }).toList();
           }
           if (startDate != null) {
@@ -207,7 +212,7 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
                 DateTime mDate = DateTime.parse(m["date"]);
                 return mDate.isAfter(startDate!) ||
                     mDate.isAtSameMomentAs(startDate!);
-              } catch (e) {
+              } catch (_) {
                 return false;
               }
             }).toList();
@@ -218,42 +223,39 @@ class _JournalDuStockPageState extends State<JournalDuStockPage> {
                 DateTime mDate = DateTime.parse(m["date"]);
                 return mDate.isBefore(endDate!) ||
                     mDate.isAtSameMomentAs(endDate!);
-              } catch (e) {
+              } catch (_) {
                 return false;
               }
             }).toList();
           }
 
-          // Sort by date
           movements.sort((a, b) => a["date"].compareTo(b["date"]));
 
-          List<DataRow> rows = [];
-          for (var movement in movements) {
+          List<DataRow> rows = movements.map((movement) {
             Article? article = movement["article"];
-            if (article == null) continue;
-            rows.add(DataRow(cells: [
+            if (article == null) return const DataRow(cells: []);
+            return DataRow(cells: [
               DataCell(Text(article.articleName)),
-              DataCell(
-                Text(
-                  movement["type"],
+              DataCell(Text(dbController
+                  .getDesignationCompteByid(article.designation_id))),
+              DataCell(Text(movement["type"],
                   style: TextStyle(
-                    color: movement["type"] == "Ajouté"
-                        ? Colors.green
-                        : Colors.red,
+                    color:
+                        movement["type"] == "Entré" ? Colors.green : Colors.red,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
+                  ))),
               DataCell(Text("${movement["quantity"]}")),
               DataCell(Text(movement["date"])),
-            ]));
-          }
+            ]);
+          }).toList();
+
           return SingleChildScrollView(
             scrollDirection: Axis.vertical,
             child: DataTable(
               columnSpacing: 16.0,
               columns: const [
                 DataColumn(label: Text("Article")),
+                DataColumn(label: Text("Compte")),
                 DataColumn(label: Text("Mouvement")),
                 DataColumn(label: Text("Quantité")),
                 DataColumn(label: Text("Date")),
